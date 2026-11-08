@@ -1,0 +1,186 @@
+{
+  "upstream": "https://github.com/chrisryugj/kordoc",
+  "commit": "28c699737ef5e66cceb2d0bc449700cb3578780c",
+  "version": "4.24.47",
+  "changes": [
+    "Type annotations removed using Node stripTypeScriptTypes transform",
+    "Relative module extensions changed from .js to .mjs",
+    "Runtime entry restricted to HWPX SVG rendering; original attribution retained"
+  ],
+  "files": [
+    {
+      "source": "src/render/svg-render.ts",
+      "local": "render/svg-render.mjs",
+      "sourceSha256": "adaca1b7f95eadb3e0d3028acb8729b3ff2908ddba33bff987538638fcdea35f"
+    },
+    {
+      "source": "src/utils.ts",
+      "local": "utils.mjs",
+      "sourceSha256": "ce259b3ce9654693905c89fb289576daa59d955332d5258f917cb71b03948838"
+    },
+    {
+      "source": "src/hwpx/parser-shared.ts",
+      "local": "hwpx/parser-shared.mjs",
+      "sourceSha256": "89f4bd0ea7469423233f7b6cfbe7deccd9dcacd8c6f4817743e0a19e5959c3e1"
+    },
+    {
+      "source": "src/shared/xml.ts",
+      "local": "shared/xml.mjs",
+      "sourceSha256": "75ea061dcee3daba4e33e16ffe0cc0c3b5599878cfc42ec016923b5596682db9"
+    },
+    {
+      "source": "src/render/layout.ts",
+      "local": "render/layout.mjs",
+      "sourceSha256": "fd7fec0e45738a39ee5da7f3a69caa8319beef3e22cfe599e0694a84c18dff8d"
+    },
+    {
+      "source": "src/hwpx/text-metrics.ts",
+      "local": "hwpx/text-metrics.mjs",
+      "sourceSha256": "acdfb77b37eb8a9db61e78e5f25240188d32ff8762937fd169c78a55e511de15"
+    },
+    {
+      "source": "src/hwpx/font-metrics.ts",
+      "local": "hwpx/font-metrics.mjs",
+      "sourceSha256": "538bb9679dfe8c5cb5987ea23aec2bae7528e0d25e76eae9a3c1a7669b9d4cb3"
+    },
+    {
+      "source": "src/hwpx/hft-latin-widths.ts",
+      "local": "hwpx/hft-latin-widths.mjs",
+      "sourceSha256": "4a5314ca40c789c65f4fe080a573a6b3b1c40a41563dfc7c9555a695b3971d48"
+    },
+    {
+      "source": "src/hwpx/face-width-fix.ts",
+      "local": "hwpx/face-width-fix.mjs",
+      "sourceSha256": "88beb94830d6d36b69ff3998eee98ce765f81a18b7d1286fc3e44ce07a2a3db7"
+    },
+    {
+      "source": "src/hwpx/seoul-font-widths.ts",
+      "local": "hwpx/seoul-font-widths.mjs",
+      "sourceSha256": "df1b3c17846b72fc45d9d5dc38a568bf9001376ecb6dba36a3b0ce51bbbb84b0"
+    },
+    {
+      "source": "src/render/head-styles.ts",
+      "local": "render/head-styles.mjs",
+      "sourceSha256": "3a8e6ac006e1b6fab7fd870da52a2c8cbf2ea4d1eb7f23e628592a77fce40ef9"
+    },
+    {
+      "source": "src/render/reflow.ts",
+      "local": "render/reflow.mjs",
+      "sourceSha256": "3053c2542cc4268a01226399db125b468e58e4a713e20014d33dc765e24e4dd9"
+    },
+    {
+      "source": "src/render/para-model.ts",
+      "local": "render/para-model.mjs",
+      "sourceSha256": "09e519d6b5f2cfadf6f732db263b6d99e8cbcbf15c268b6cd48255237ae6129e"
+    },
+    {
+      "source": "src/hwpx/notes.ts",
+      "local": "hwpx/notes.mjs",
+      "sourceSha256": "0690f02fd4394adafda746f653a516d7d13146b02b981cd5197671fa86ea35c8"
+    },
+    {
+      "source": "src/hwpx/para-heading.ts",
+      "local": "hwpx/para-heading.mjs",
+      "sourceSha256": "d23df5af6359dc1db66b13970d8ddf08a3dd30f0562ba8f0f2d5946107b9f6b3"
+    },
+    {
+      "source": "src/shared/numbering.ts",
+      "local": "shared/numbering.mjs",
+      "sourceSha256": "a7d3eba9d3b92d914ae595bd8ca39a5defa22b4955e2fee21036277006d05554"
+    },
+    {
+      "source": "src/render/reflow-tables.ts",
+      "local": "render/reflow-tables.mjs",
+      "sourceSha256": "6eb9d2610e7fa8f4b5372b1b8285f59947d5cc247d82afaf9f51167339a7bd64"
+    },
+    {
+      "source": "src/render/para-number.ts",
+      "local": "render/para-number.mjs",
+      "sourceSha256": "0abc8a2e56c94c10019d6c810b9c652a65889d20a346834a03f977cc06c8a4c8"
+    },
+    {
+      "source": "src/render/reflow-cache.ts",
+      "local": "render/reflow-cache.mjs",
+      "sourceSha256": "c319eaacf872fa8acf44d83634e35bb008596e0652a3ed21e85fb04c9d4730de"
+    },
+    {
+      "source": "src/render/reflow-fragments.ts",
+      "local": "render/reflow-fragments.mjs",
+      "sourceSha256": "d1bed8db5e0adb38d10e38448cfcebcb7bce260ff04d99aaf8b18e67e6bf4c8c"
+    },
+    {
+      "source": "src/render/reflow-borders.ts",
+      "local": "render/reflow-borders.mjs",
+      "sourceSha256": "aed28ca17c6374f856707e94c35f733fb09a2c67cab28e134a57504acfdd2df2"
+    },
+    {
+      "source": "src/render/font-env.ts",
+      "local": "render/font-env.mjs",
+      "sourceSha256": "0b5b31ab03070c05da16c68f86c80b44ab255c84b50c7027a76f26847d1302b2"
+    },
+    {
+      "source": "src/shared/pua.ts",
+      "local": "shared/pua.mjs",
+      "sourceSha256": "765c1d37a8f2c956820dea222aa162ec37b28c1c315fbcf9bf5596702ddd2722"
+    },
+    {
+      "source": "src/shared/symbol-fonts.ts",
+      "local": "shared/symbol-fonts.mjs",
+      "sourceSha256": "da89d4f4494f2e7823d18e81908cb05221fed9212d043d884e28ba97a9eed1d4"
+    },
+    {
+      "source": "src/render/equation-text.ts",
+      "local": "render/equation-text.mjs",
+      "sourceSha256": "3b8140672fa6b669d930de239b54e41220baef3cdf66e2c2d88c49ab1e1eaffe"
+    },
+    {
+      "source": "src/hwp5/equation.ts",
+      "local": "hwp5/equation.mjs",
+      "sourceSha256": "088d225e17deb5535f762e8dfdcfe18f5a87e3360e161e9d7e568f14602914a3"
+    },
+    {
+      "source": "src/hwpx/equation.ts",
+      "local": "hwpx/equation.mjs",
+      "sourceSha256": "aff5922d741020b8e1c0fc27f7432b52753534289ed8f2c132d627073c28a5b3"
+    },
+    {
+      "source": "src/render/scene.ts",
+      "local": "render/scene.mjs",
+      "sourceSha256": "5078a43560e61d5eef4c89a241c914a48643a2a95e9b8b95f6b7740d37425436"
+    },
+    {
+      "source": "src/render/page-stories.ts",
+      "local": "render/page-stories.mjs",
+      "sourceSha256": "dfd23e9bb9dc1cedc24bf078f8f778efd9ce99effb6218bf9cc148eaacaaf31a"
+    },
+    {
+      "source": "src/render/table-pages.ts",
+      "local": "render/table-pages.mjs",
+      "sourceSha256": "49de075b392aa69afe873adbfe1e73e39c470971afbb1c618ac14c6183ef1a26"
+    },
+    {
+      "source": "src/render/shape-geometry.ts",
+      "local": "render/shape-geometry.mjs",
+      "sourceSha256": "f35954c34146ac74a3e0eba85957ebe3dacb8feebb4358d8dbe0a79f8d407aae"
+    },
+    {
+      "source": "src/render/object-anchor.ts",
+      "local": "render/object-anchor.mjs",
+      "sourceSha256": "97af641a58ea4acf3e30364baf5dbf8197de8808f2e5f89bf5ae0de40363eabb"
+    },
+    {
+      "source": "src/hwpx/crypto.ts",
+      "local": "hwpx/crypto.mjs",
+      "sourceSha256": "7c166f8a5f874ee02d0e814cbb2b983a42c07155633ee8fdf1b9f7ec5d915332"
+    },
+    {
+      "source": "src/render/svg-content.ts",
+      "local": "render/svg-content.mjs",
+      "sourceSha256": "8ebbb1e51146cc1280c1f5a17085606639fb2320d45c91918ebf3da641e426ef"
+    }
+  ],
+  "localChanges": [
+    "my-system: LINEAR/SQUARE cell and paragraph gradient painting added in render/fill-paint.mjs",
+    "my-system: Windows HY headline and SinMyeongJo font aliases added in render/head-styles.mjs"
+  ]
+}

@@ -1,0 +1,10 @@
+node_modules/
+.local/
+.env
+.env.*
+*.log
+*.tgz
+dist/
+workspace/
+.autosw/
+autosw.config.json

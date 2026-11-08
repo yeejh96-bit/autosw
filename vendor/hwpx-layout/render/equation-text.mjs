@@ -1,0 +1,247 @@
+// Derived from kordoc (MIT), Copyright 2026 chrisryugj. See ../LICENSE or package-root LICENSE and PROVENANCE.json.
+const SYMBOLS = {
+    alpha: "α",
+    beta: "β",
+    gamma: "γ",
+    delta: "δ",
+    epsilon: "ε",
+    varepsilon: "ε",
+    zeta: "ζ",
+    eta: "η",
+    theta: "θ",
+    vartheta: "ϑ",
+    iota: "ι",
+    kappa: "κ",
+    lambda: "λ",
+    mu: "μ",
+    nu: "ν",
+    xi: "ξ",
+    pi: "π",
+    rho: "ρ",
+    sigma: "σ",
+    tau: "τ",
+    upsilon: "υ",
+    phi: "φ",
+    varphi: "φ",
+    chi: "χ",
+    psi: "ψ",
+    omega: "ω",
+    Gamma: "Γ",
+    Delta: "Δ",
+    Theta: "Θ",
+    Lambda: "Λ",
+    Xi: "Ξ",
+    Pi: "Π",
+    Sigma: "Σ",
+    Phi: "Φ",
+    Psi: "Ψ",
+    Omega: "Ω",
+    times: "×",
+    cdot: "·",
+    div: "÷",
+    pm: "±",
+    mp: "∓",
+    le: "≤",
+    leq: "≤",
+    ge: "≥",
+    geq: "≥",
+    ne: "≠",
+    neq: "≠",
+    approx: "≈",
+    equiv: "≡",
+    sim: "∼",
+    infty: "∞",
+    rightarrow: "→",
+    leftarrow: "←",
+    Rightarrow: "⇒",
+    Leftarrow: "⇐",
+    leftrightarrow: "↔",
+    Leftrightarrow: "⇔",
+    to: "→",
+    angle: "∠",
+    triangle: "△",
+    perp: "⊥",
+    parallel: "∥",
+    circ: "∘",
+    degree: "°",
+    sum: "Σ",
+    prod: "Π",
+    int: "∫",
+    oint: "∮",
+    partial: "∂",
+    nabla: "∇",
+    in: "∈",
+    notin: "∉",
+    subset: "⊂",
+    supset: "⊃",
+    subseteq: "⊆",
+    supseteq: "⊇",
+    cup: "∪",
+    cap: "∩",
+    emptyset: "∅",
+    forall: "∀",
+    exists: "∃",
+    therefore: "∴",
+    because: "∵",
+    prime: "′",
+    cdots: "⋯",
+    ldots: "…",
+    dots: "…",
+    vdots: "⋮",
+    lim: "lim",
+    log: "log",
+    ln: "ln",
+    sin: "sin",
+    cos: "cos",
+    tan: "tan",
+    sec: "sec",
+    csc: "csc",
+    cot: "cot",
+    exp: "exp",
+    max: "max",
+    min: "min",
+    quad: " ",
+    qquad: "  ",
+    ",": " ",
+    ";": " ",
+    "!": "",
+    "{": "{",
+    "}": "}",
+    "|": "‖",
+    backslash: "\\",
+    lbrace: "{",
+    rbrace: "}",
+    langle: "⟨",
+    rangle: "⟩"
+};
+const SUP = {
+    "0": "⁰",
+    "1": "¹",
+    "2": "²",
+    "3": "³",
+    "4": "⁴",
+    "5": "⁵",
+    "6": "⁶",
+    "7": "⁷",
+    "8": "⁸",
+    "9": "⁹",
+    "+": "⁺",
+    "-": "⁻",
+    "=": "⁼",
+    "(": "⁽",
+    ")": "⁾",
+    n: "ⁿ",
+    i: "ⁱ",
+    x: "ˣ",
+    "′": "′"
+};
+const SUB = {
+    "0": "₀",
+    "1": "₁",
+    "2": "₂",
+    "3": "₃",
+    "4": "₄",
+    "5": "₅",
+    "6": "₆",
+    "7": "₇",
+    "8": "₈",
+    "9": "₉",
+    "+": "₊",
+    "-": "₋",
+    "=": "₌",
+    "(": "₍",
+    ")": "₎"
+};
+export function latexToPlain(latex) {
+    let i = 0;
+    const s = latex;
+    const skipWs = ()=>{
+        while(i < s.length && s[i] === " ")i++;
+    };
+    const arg = ()=>{
+        skipWs();
+        if (s[i] === "{") {
+            i++;
+            const v = seq("}");
+            i++;
+            return v;
+        }
+        return atom();
+    };
+    const wrap = (v)=>v.length > 1 && !/^[\w.′]+$|^\(.*\)$/u.test(v) ? `(${v})` : v;
+    const script = (v, map, mark)=>{
+        const t = v.trim();
+        return [
+            ...t
+        ].every((c)=>map[c]) ? [
+            ...t
+        ].map((c)=>map[c]).join("") : `${mark}${wrap(t)}`;
+    };
+    const atom = ()=>{
+        const c = s[i];
+        if (c === undefined) return "";
+        if (c === "\\") {
+            i++;
+            let name = "";
+            if (/[A-Za-z]/.test(s[i] ?? "")) while(/[A-Za-z]/.test(s[i] ?? ""))name += s[i++];
+            else name = s[i++] ?? "";
+            if (name === "frac") {
+                const a = arg(), b = arg();
+                return `${wrap(a.trim())}/${wrap(b.trim())}`;
+            }
+            if (name === "sqrt") {
+                skipWs();
+                let root = "";
+                if (s[i] === "[") {
+                    i++;
+                    root = seq("]");
+                    i++;
+                }
+                const a = arg();
+                return `${root ? script(root, SUP, "") : ""}√${wrap(a.trim())}`;
+            }
+            if (name === "left" || name === "right" || name === "big" || name === "Big" || name === "bigg" || name === "Bigg") {
+                skipWs();
+                const d = s[i] === "\\" ? atom() : s[i++] ?? "";
+                return d === "." ? "" : d;
+            }
+            if (name === "overline" || name === "bar" || name === "hat" || name === "vec" || name === "dot" || name === "tilde") {
+                const a = arg().trim(), mark = {
+                    overline: "̅",
+                    bar: "̄",
+                    hat: "̂",
+                    vec: "⃗",
+                    dot: "̇",
+                    tilde: "̃"
+                }[name];
+                return [
+                    ...a
+                ].map((ch)=>ch + mark).join("");
+            }
+            if (name === "mathrm" || name === "text" || name === "rm" || name === "mathbf" || name === "it" || name === "mathit" || name === "operatorname") return name === "rm" || name === "it" ? "" : arg();
+            return SYMBOLS[name] ?? name;
+        }
+        i++;
+        if (c === "{") {
+            const v = seq("}");
+            i++;
+            return v;
+        }
+        if (c === "^") return script(arg(), SUP, "^");
+        if (c === "_") return script(arg(), SUB, "_");
+        if (c === "~" || c === "`") return " ";
+        return c;
+    };
+    const seq = (end)=>{
+        let out = "";
+        while(i < s.length && s[i] !== end){
+            if (s[i] === " ") {
+                i++;
+                continue;
+            }
+            out += atom();
+        }
+        return out;
+    };
+    return seq("\u0000").replace(/\s+/g, " ").trim();
+}
