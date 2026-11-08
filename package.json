@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": false,
   "publishConfig": { "registry": "https://registry.npmjs.org/", "access": "public" },
-  "repository": { "type": "git", "url": "https://github.com/yeejh96-bit/autosw.git" },
+  "repository": { "type": "git", "url": "git+https://github.com/yeejh96-bit/autosw.git" },
   "homepage": "https://github.com/yeejh96-bit/autosw#readme",
   "bugs": { "url": "https://github.com/yeejh96-bit/autosw/issues" },
   "description": "사회복지 문서 작성·Windows 한글 출력·개인별 인원 실적과 지출 관리",
