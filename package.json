@@ -1,5 +1,5 @@
 {
-  "name": "autosw",
+  "name": "@yeejh96/autosw",
   "version": "0.1.0",
   "private": false,
   "publishConfig": { "registry": "https://registry.npmjs.org/", "access": "public" },

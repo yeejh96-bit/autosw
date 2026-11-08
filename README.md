@@ -2,7 +2,7 @@
 
 사회복지 문서의 초안 작성부터 한글파일 생성·검증, 개인별 프로그램 인원 실적·지출 관리까지 이어 주는 로컬 도구입니다. AI용 작성 지침과 MCP 서버, 명령행 도구를 하나의 프로젝트로 제공합니다.
 
-Windows용 초기판입니다. 소스는 [GitHub](https://github.com/yeejh96-bit/autosw), 실행 패키지는 [npm](https://www.npmjs.com/package/autosw)에서 제공합니다. OpenAI 공식 플러그인 디렉터리 등록본은 아닙니다.
+Windows용 초기판입니다. 소스는 [GitHub](https://github.com/yeejh96-bit/autosw), 실행 패키지는 [npm](https://www.npmjs.com/package/@yeejh96/autosw)에서 제공합니다. OpenAI 공식 플러그인 디렉터리 등록본은 아닙니다.
 
 ## 하는 일
 
@@ -33,7 +33,7 @@ Windows용 초기판입니다. 소스는 [GitHub](https://github.com/yeejh96-bit
 Node.js를 준비한 뒤 다음 명령으로 Codex의 개인 프로젝트에 연결합니다.
 
 ```powershell
-npx -y autosw@0.1.0 setup
+npx -y @yeejh96/autosw@0.1.0 setup
 ```
 
 Node.js 24.22.1 이상 25 미만을 준비한 뒤 명령을 실행합니다. 개인 작업 폴더와 연결 내용을 확인하고 Y를 입력하면 Codex의 프로젝트별 MCP 설정과 작성 지침을 설치합니다. 실행 버전은 고정되며 npm 캐시 경로에 연결을 묶지 않습니다. 이후 표시된 개인 작업 폴더를 Codex 프로젝트로 열고 신뢰 여부를 직접 확인합니다. 새 대화에서 “autosw 환경을 확인하고 작성 지침을 읽어줘”라고 요청해 실제 도구 호출을 확인하세요. 프로그램 자체의 진단 성공만으로 앱 연결까지 완료됐다고 판단하지 않습니다.

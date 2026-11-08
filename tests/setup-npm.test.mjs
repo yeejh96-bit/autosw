@@ -19,11 +19,11 @@ try {
   const result = npmSetup(work, true);
   assert.equal(result.status, 'setup-written');
   const config = fs.readFileSync(result.configPath, 'utf8');
-  assert.match(config, /autosw@0\.1\.0/); assert.ok(config.includes(JSON.stringify(work)));
+  assert.match(config, /@yeejh96\/autosw@0\.1\.0/); assert.ok(config.includes(JSON.stringify(work)));
   assert.ok(!config.includes(packageRoot));
   const argsLine = config.split('\n').find(l => l.startsWith('args = '));
   const args = JSON.parse(argsLine.slice(7));
-  assert.deepEqual(args, ['/d', '/c', 'npx', '--yes', 'autosw@0.1.0', 'mcp']);
+  assert.deepEqual(args, ['/d', '/c', 'npx', '--yes', '@yeejh96/autosw@0.1.0', 'mcp']);
   assert.ok(!args.some(a => a.includes(work)), '사용자 경로를 셸 인자로 결합하지 않음');
   assert.ok(fs.existsSync(path.join(work, '.agents/skills/autosw-document/references/ledger.md')));
   assert.throws(() => npmSetup(work, true), /기존/); assert.equal(fs.readFileSync(result.configPath, 'utf8'), config);

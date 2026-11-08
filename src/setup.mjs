@@ -8,10 +8,10 @@ export function setup(workspace, apply = false, { launcher = 'local' } = {}) {
   const skillParent = path.join(root, '.agents', 'skills'), skill = path.join(skillParent, 'autosw-document');
   if (!['local', 'npm'].includes(launcher)) throw new Error('지원하지 않는 실행 방식');
   const pkg = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json')));
-  if (pkg.name !== 'autosw' || !/^\d+\.\d+\.\d+$/.test(pkg.version)) throw new Error('패키지 이름·버전 확인 필요');
+  if (pkg.name !== '@yeejh96/autosw' || !/^\d+\.\d+\.\d+$/.test(pkg.version)) throw new Error('패키지 이름·버전 확인 필요');
   const entry = path.join(packageRoot, 'bin', 'autosw.mjs');
   const command = launcher === 'local' ? process.execPath : process.platform === 'win32' ? 'cmd.exe' : 'npx';
-  const args = launcher === 'local' ? [entry, 'mcp', '--workspace', root] : [...(process.platform === 'win32' ? ['/d', '/c', 'npx'] : []), '--yes', `autosw@${pkg.version}`, 'mcp'];
+  const args = launcher === 'local' ? [entry, 'mcp', '--workspace', root] : [...(process.platform === 'win32' ? ['/d', '/c', 'npx'] : []), '--yes', `${pkg.name}@${pkg.version}`, 'mcp'];
   // JSON basic strings are also valid for these TOML string values (paths contain no control characters).
   const content = `[mcp_servers.autosw]\ncommand = ${JSON.stringify(command)}\nargs = ${JSON.stringify(args)}\nstartup_timeout_sec = ${launcher === 'npm' ? 120 : 30}\ntool_timeout_sec = 180\n` + (launcher === 'npm' ? `\n[mcp_servers.autosw.env]\nAUTOSW_WORKSPACE = ${JSON.stringify(root)}\n` : '');
   const plan = { status: 'setup-preview', workspace: root, configPath: config, config: content, skillPath: skill, note: '지정 작업 폴더에만 설치합니다. 기존 설정은 덮어쓰지 않습니다. 설치 뒤 해당 폴더를 Codex 프로젝트로 열고 신뢰 설정을 확인하세요. 웹 ChatGPT 연결은 별도입니다.' };
