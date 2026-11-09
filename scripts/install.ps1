@@ -15,7 +15,15 @@ try { $exe = Get-AutoswNode } catch {
     $release = Split-Path -Leaf $destination
     $zip = Join-Path $stage ($release + '.zip')
     Invoke-WebRequest -UseBasicParsing -Uri ('https://nodejs.org/dist/v26.13.0/' + $release + '.zip') -OutFile $zip -TimeoutSec 120
-    if ((Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash -ne 'DCC60D59A0746999F99064A01C020445D54D84228C691CDBF25B49AC3B59150A') {
+    # Use the Windows runtime directly so module lookup cannot block the hash check.
+    $hasher = [Security.Cryptography.SHA256]::Create()
+    try {
+      $archive = [IO.File]::OpenRead($zip)
+      try {
+        $actualHash = [BitConverter]::ToString($hasher.ComputeHash($archive)).Replace('-', '')
+      } finally { $archive.Dispose() }
+    } finally { $hasher.Dispose() }
+    if ($actualHash -ne 'DCC60D59A0746999F99064A01C020445D54D84228C691CDBF25B49AC3B59150A') {
       throw '공식 Node 설치 파일의 확인값이 다릅니다.'
     }
     & (Join-Path $env:SystemRoot 'System32/tar.exe') -xf $zip -C $stage
