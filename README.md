@@ -4,14 +4,22 @@ Windows용 Codex 플러그인입니다. 사회복지 문서의 초안·검토·�
 
 ## 빠른 설치
 
-Windows x64에서 Git과 플러그인 설치를 지원하는 Codex 명령이 필요합니다. PowerShell에 아래 두 줄을 차례로 입력합니다.
+Windows x64에서 Codex 앱과 Git이 필요합니다. Codex 앱이 설치돼 있어도 PowerShell에서 `codex` 명령을 찾지 못할 수 있으므로, 처음 설치할 때는 아래 순서로 진행합니다.
+
+**1. PowerShell에서 명령줄용 Codex를 설치합니다.** 이미 설치돼 있으면 업데이트합니다. [OpenAI 공식 설치 안내](https://learn.chatgpt.com/docs/codex/cli)
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://chatgpt.com/codex/install.ps1 | iex"
+```
+
+**2. 설치가 끝나면 PowerShell을 닫았다가 다시 엽니다.** 새 창에서 아래 두 줄을 한 줄씩 실행합니다. 첫 번째 명령이 성공한 뒤 두 번째 명령을 실행합니다.
 
 ```powershell
 codex plugin marketplace add yeejh96-bit/autosw --ref main
 codex plugin add autosw@autosw-marketplace
 ```
 
-Codex 앱을 다시 열고 autosw의 **설정**을 실행합니다. 설정 버튼이 없으면 새 대화에서 **“autosw 처음 설정해줘”**라고 요청합니다.
+**3. Codex 앱을 완전히 종료한 뒤 다시 열고** autosw의 **설정**을 실행합니다. 설정 버튼이 없으면 새 대화에서 **“autosw 처음 설정해줘”**라고 요청합니다.
 
 첫 설정은 사용할 수 있는 Node를 확인합니다. 없거나 버전이 낮으면 공식 Node.js 배포에서 Windows x64 실행 환경을 받아 사용자 계정의 autosw 전용 위치에 준비합니다. 이어서 잠금 파일에 지정된 라이브러리를 내려받고 바탕화면에 `autosw-workspace`를 만듭니다. 처음에는 인터넷이 필요합니다. 앱이 실행 또는 다운로드 확인을 표시하면 안내에 따릅니다.
 
