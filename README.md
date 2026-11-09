@@ -4,6 +4,19 @@ Windows용 Codex 플러그인입니다. 사회복지 문서의 초안·검토·�
 
 ## 빠른 설치
 
+### Codex 앱에서 요청
+
+Codex 앱의 새 대화에 아래 내용을 복사해 붙여 넣으세요.
+
+```text
+https://github.com/yeejh96-bit/autosw
+이 플러그인을 설치하고 처음 설정까지 진행해줘.
+```
+
+권한 승인이나 앱 재시작이 필요하면 Codex의 안내에 따릅니다.
+
+### PowerShell에서 직접 설치
+
 Windows x64에서 Codex 앱과 Git이 필요합니다. Codex 앱이 설치돼 있어도 PowerShell에서 `codex` 명령을 찾지 못할 수 있으므로, 처음 설치할 때는 아래 순서로 진행합니다.
 
 **1. PowerShell에서 명령줄용 Codex를 설치합니다.** 이미 설치돼 있으면 업데이트합니다. [OpenAI 공식 설치 안내](https://learn.chatgpt.com/docs/codex/cli)
