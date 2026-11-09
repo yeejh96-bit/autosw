@@ -26,7 +26,7 @@ try {
   assert.equal(preview.status, 'npm-setup-preview'); assert.equal(fs.existsSync(workspace), false);
   const actual = JSON.parse(run([cli, 'setup', '--npm', '--workspace', workspace, '--apply']));
   assert.equal(actual.status, 'setup-written');
-  assert.ok(fs.readFileSync(actual.configPath, 'utf8').includes('@yeejh96/autosw@0.1.2'));
+  assert.ok(fs.readFileSync(actual.configPath, 'utf8').includes('@yeejh96/autosw@0.1.3'));
   run([path.join(app, 'scripts/check-connection.mjs'), '--workspace', workspace]);
   run([cli, 'write-draft', '--workspace', workspace, '--output', 'drafts/test.md', '--content', '# 합성 패키지 시험\n\n설치한 패키지로 생성한 문서입니다.']);
   const plan = JSON.parse(run([cli, 'preview', '--workspace', workspace, '--kind', 'create', '--input', 'drafts/test.md', '--output', 'outputs/test.hwpx']));

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 export const packageRoot = fileURLToPath(new URL('../', import.meta.url));
 export function assertNode() {
   const [major, minor, patch] = process.versions.node.split('.').map(Number);
-  if (major !== 24 || minor < 22 || (minor === 22 && patch < 1)) throw new Error('Node 24.22.1 이상 24.x가 필요합니다.');
+  if (major < 24 || (major === 24 && (minor < 22 || (minor === 22 && patch < 1)))) throw new Error('Node 24.22.1 이상이 필요합니다. 최신 Node.js LTS를 설치하세요.');
 }
 export const defaultWorkspace = () => path.join(os.homedir(), 'Documents', 'autosw-workspace');
 export function inside(root, candidate) {

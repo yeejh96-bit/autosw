@@ -4,7 +4,7 @@ function Get-AutoswNode {
   if (Test-Path -LiteralPath $local -PathType Leaf) { $exe = $local }
   else { $exe = (Get-Command node.exe -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source }
   & $exe (Join-Path $PSScriptRoot 'check-node.mjs')
-  if ($LASTEXITCODE -ne 0) { throw 'Node 24.22.1 이상 24.x를 설치하세요.' }
+  if ($LASTEXITCODE -ne 0) { throw '최신 Node.js LTS를 설치하세요. 최소 요구 버전은 24.22.1입니다.' }
   return $exe
 }
 function Invoke-AutoswNode {

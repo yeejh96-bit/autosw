@@ -9,18 +9,18 @@ Windows용 초기판입니다. 소스는 [GitHub](https://github.com/yeejh96-bit
 Windows PowerShell에서 Node를 설치합니다. 이미 지원 버전의 Node가 있으면 첫 명령은 건너뜁니다.
 
 ```powershell
-winget install --id OpenJS.NodeJS.LTS --exact --version 24.22.1
+winget install --id OpenJS.NodeJS.LTS --exact
 ```
 
 설치 후 **PowerShell과 Codex를 완전히 종료했다가 다시 열고**, autosw를 설치합니다.
 
 ```powershell
-npx.cmd -y @yeejh96/autosw@0.1.2 setup
+npx.cmd -y @yeejh96/autosw@latest setup
 ```
 
 연결 내용을 확인하고 **Y**를 입력한 뒤, 안내된 개인 작업 폴더를 Codex에서 엽니다. 새 대화에서 **“autosw 환경을 확인하고 작성 지침을 읽어줘”**라고 요청하면 됩니다.
 
-Node 명령은 winget에서 설치 가능한 지원 버전 `24.22.1`로 고정했습니다. 설치창·권한 확인은 직접 진행하세요. 다른 버전의 Node를 사용 중이거나 winget이 없으면 [Node 준비](#node-준비)를 확인하세요. [Microsoft winget 안내](https://learn.microsoft.com/windows/package-manager/winget/install)
+Node는 winget에 등록된 최신 LTS, autosw는 npm의 최신 배포판으로 설치합니다. 설치창·권한 확인은 직접 진행하세요. 다른 버전의 Node를 사용 중이거나 winget이 없으면 [Node 준비](#node-준비)를 확인하세요. [Microsoft winget 안내](https://learn.microsoft.com/windows/package-manager/winget/install)
 
 ## 하는 일
 
@@ -38,7 +38,7 @@ Node 명령은 winget에서 설치 가능한 지원 버전 `24.22.1`로 고정�
 
 ## 필요한 환경
 
-- Node.js 24.22.1 이상 25 미만과 npm (새 설치 권장·개발 기준: 24.22.2)
+- 최신 Node.js LTS와 npm (최소 요구 버전: Node 24.22.1)
 - Windows PowerShell 5.1 이상: 독립 구조 읽기와 한글 연동
 - 설치된 한글 프로그램: HWP 입력 변환과 최종 한글 검증
 - 설치된 Chrome 또는 Edge 등 지원 브라우저와 글꼴: 자체 미리보기
@@ -77,51 +77,33 @@ Node와 npm 버전을 먼저 확인하고, Node가 없으면 README의 공식 No
 
 ### Node 준비
 
-Windows PowerShell에서 아래 명령을 각각 확인합니다. **Node 24.22.1 이상인 24.x**와 npm이 표시되면 다음 절로 넘어갑니다. Node가 이미 다른 버전으로 설치되어 있으면 다른 프로그램에 영향을 줄 수 있으므로 임의로 교체하지 마세요. 이 안내의 새 설치 기준은 **24.22.2**입니다.
+새 설치는 **최신 Node.js LTS**를 사용합니다. 빠른 설치의 winget 명령은 버전을 지정하지 않아 winget에 등록된 최신 LTS를 선택합니다. 시험판·Alpha 계열을 설치하는 명령은 아닙니다.
+
+이미 Node를 쓰고 있다면 PowerShell에서 확인합니다.
 
 ```powershell
 node --version
 npm.cmd --version
 ```
 
-Node가 없다면 먼저 [빠른 설치](#빠른-설치)의 winget 명령을 사용하세요. winget을 사용할 수 없거나 권장 버전 24.22.2를 직접 설치하려면 아래 상세 방법을 펼칩니다.
-
-<details>
-<summary>Node 24.22.2 직접 설치 — winget을 사용할 수 없을 때</summary>
-
-**Windows x64 PC**에서 다음 블록 전체를 실행하세요. 공식 MSI를 내려받아 SHA256을 대조한 뒤 설치창을 엽니다. 설치창과 Windows 권한 확인은 직접 진행합니다.
+최소 요구 버전은 24.22.1이며, 그보다 최신인 Node를 특정 계열이라는 이유로 차단하지 않습니다. 구버전을 사용 중이면 다른 프로그램에 미치는 영향을 확인한 뒤 최신 LTS로 업데이트합니다.
 
 ```powershell
-& {
-    $ErrorActionPreference = 'Stop'
-    $nodeInstaller = Join-Path ([IO.Path]::GetTempPath()) ('autosw-node-' + [guid]::NewGuid().ToString('N') + '.msi')
-    try {
-        Invoke-WebRequest 'https://nodejs.org/dist/v24.22.2/node-v24.22.2-x64.msi' -OutFile $nodeInstaller -UseBasicParsing
-        $expectedHash = '9231bf64d19bef391dd5ee8af65411d3799c3c44a842d2320849cc1da60b6b6d'
-        if ((Get-FileHash -LiteralPath $nodeInstaller -Algorithm SHA256).Hash -ne $expectedHash) { throw 'Node 설치 파일 확인에 실패했습니다. 설치를 중단합니다.' }
-        $nodeInstallResult = Start-Process -FilePath 'msiexec.exe' -ArgumentList @('/i', ('"{0}"' -f $nodeInstaller), '/norestart') -Wait -PassThru
-        if ($nodeInstallResult.ExitCode -notin @(0, 3010)) { throw "Node 설치가 완료되지 않았습니다. 종료 코드: $($nodeInstallResult.ExitCode)" }
-        if ($nodeInstallResult.ExitCode -eq 3010) { Write-Host 'Node 설치 완료. PC를 다시 시작한 뒤 autosw 설치를 진행하세요.' }
-    } finally {
-        if (Test-Path -LiteralPath $nodeInstaller) { Remove-Item -LiteralPath $nodeInstaller }
-    }
-}
+winget upgrade --id OpenJS.NodeJS.LTS --exact
 ```
 
-완료·취소 뒤 내려받은 설치 파일을 정리하며 PC를 자동 재부팅하지 않습니다. 실패하면 다음 설치 단계로 넘어가지 마세요. **성공 후 PowerShell과 Codex를 완전히 종료하고 다시 여세요.** 재부팅 안내가 나왔으면 재부팅한 뒤 버전을 다시 확인합니다. Node 설치와 autosw 연결은 이 재시작을 사이에 두고 진행합니다. `npx ... setup` 자체가 Node를 설치하는 것은 아닙니다.
+winget이 없거나 해당 패키지를 찾지 못하면 [Node 공식 다운로드](https://nodejs.org/en/download)에서 Windows용 **최신 LTS** 설치 파일을 받아 실행하세요. CPU에 맞는 x64·ARM64를 선택합니다. autosw의 실제 검증 환경은 Windows x64이며 ARM64 전체 기능은 별도 확인이 필요합니다.
 
-ARM64는 [공식 배포 페이지](https://nodejs.org/en/blog/release/v24.22.2)에서 맞는 설치 파일을 선택하세요. ARM64에서 autosw 전체 기능은 검증하지 않았습니다. 관리자 권한이 막혀 있거나 다른 Node 계열을 유지해야 하면 설치 담당자에게 별도 실행 환경 구성을 요청하세요. 실행 정책·보안 설정을 풀어서 진행하지 않습니다.
+설치창과 Windows 권한 확인은 직접 진행합니다. 실패하면 다음 단계로 넘어가지 말고 오류를 확인하세요. **설치 완료 후 PowerShell과 Codex를 완전히 종료했다가 다시 엽니다.** 재부팅 안내가 나오면 재부팅한 뒤 진행합니다. `npx ... setup` 자체가 Node를 설치하거나 업데이트하지는 않습니다.
 
-설치 파일과 해시는 [공식 SHA256 목록](https://nodejs.org/dist/v24.22.2/SHASUMS256.txt)을 기준으로 고정했습니다. 보안 패치 검토 시 [Node 보안 공지](https://nodejs.org/en/blog/vulnerability)를 확인하고 주소·해시·지원 버전을 함께 갱신합니다. 설치된 Node를 자동 업데이트하지 않습니다.
-
-</details>
+관리자 권한이나 기관 보안 정책으로 설치가 막히면 설치 담당자에게 요청하세요. 실행 정책·보안 설정을 풀어서 진행하지 않습니다.
 
 ### MCP 설치 (권장)
 
 지원 버전의 Node가 준비된 새 PowerShell에서 실행합니다. 처음 내려받을 때 인터넷 연결이 필요합니다.
 
 ```powershell
-npx.cmd -y @yeejh96/autosw@0.1.2 setup
+npx.cmd -y @yeejh96/autosw@latest setup
 ```
 
 표시된 개인 작업 폴더와 연결 내용을 확인하고 **Y**를 입력합니다. 기본 위치는 사용자 홈 아래 `Documents\autosw-workspace`입니다. Codex용 MCP 설정과 작성 지침을 그 폴더에 설치하며 전역 설정은 바꾸지 않습니다. 기존 설정이나 스킬이 있으면 보존하고 중단합니다.
@@ -134,13 +116,13 @@ npx.cmd -y @yeejh96/autosw@0.1.2 setup
 
 ```powershell
 $autoswWorkspace = Join-Path $env:USERPROFILE 'Documents\autosw-workspace'
-npx.cmd -y @yeejh96/autosw@0.1.2 setup --npm --workspace "$autoswWorkspace"
+npx.cmd -y @yeejh96/autosw@latest setup --npm --workspace "$autoswWorkspace"
 ```
 
 표시된 내용으로 설치하려면 같은 PowerShell에서 실행합니다.
 
 ```powershell
-npx.cmd -y @yeejh96/autosw@0.1.2 setup --npm --workspace "$autoswWorkspace" --apply
+npx.cmd -y @yeejh96/autosw@latest setup --npm --workspace "$autoswWorkspace" --apply
 ```
 
 폴더 경로에는 따옴표를 유지하세요. 기존 프로젝트 설정이 있으면 아래 [기존 설치 업데이트](#업데이트와-제거)를 따릅니다. 서로 다른 직원의 자료는 각자의 PC·Windows 사용자·개인 작업 폴더로 분리합니다.
@@ -154,7 +136,7 @@ Node 준비를 마친 뒤 PowerShell에서 실행합니다. 이 경로는 **Code
 카탈로그 등록·설치·활성 상태는 Windows의 Codex CLI 0.159.2 임시 프로필에서 확인했습니다. 직원의 앱 화면과 실제 한글 출력은 설치 후 별도로 확인합니다.
 
 ```powershell
-npx.cmd -y @yeejh96/autosw@0.1.2 init
+npx.cmd -y @yeejh96/autosw@latest init
 codex plugin marketplace add yeejh96-bit/autosw --ref main
 codex plugin add autosw@autosw-marketplace
 ```
@@ -208,9 +190,9 @@ powershell.exe -NoProfile -File scripts/autosw.ps1 setup --workspace "$autoswWor
 
 ```powershell
 $autoswWorkspace = Join-Path $env:USERPROFILE 'Documents\autosw-workspace'
-npx.cmd -y @yeejh96/autosw@0.1.2 init --workspace "$autoswWorkspace"
-npx.cmd -y @yeejh96/autosw@0.1.2 doctor --workspace "$autoswWorkspace"
-npx.cmd -y @yeejh96/autosw@0.1.2 guide
+npx.cmd -y @yeejh96/autosw@latest init --workspace "$autoswWorkspace"
+npx.cmd -y @yeejh96/autosw@latest doctor --workspace "$autoswWorkspace"
+npx.cmd -y @yeejh96/autosw@latest guide
 ```
 
 문서 생성·인원 및 지출 입력 명령은 [명령행 사용법](docs/usage.md)을 따릅니다. `publish`는 검토한 문서를 로컬 완성본으로 저장하는 명령입니다. GitHub나 npm에 업무 자료를 올리지 않습니다. JavaScript 라이브러리의 공개 API는 제공하지 않습니다.
@@ -222,7 +204,7 @@ npx.cmd -y @yeejh96/autosw@0.1.2 guide
   "mcpServers": {
     "autosw": {
       "command": "cmd.exe",
-      "args": ["/d", "/c", "npx", "--yes", "@yeejh96/autosw@0.1.2", "mcp"],
+      "args": ["/d", "/c", "npx", "--yes", "@yeejh96/autosw@0.1.3", "mcp"],
       "env": {"AUTOSW_WORKSPACE": "D:\\autosw-work"}
     }
   }
@@ -234,7 +216,7 @@ npx.cmd -y @yeejh96/autosw@0.1.2 guide
 ```toml
 [mcp_servers.autosw]
 command = "cmd.exe"
-args = ["/d", "/c", "npx", "--yes", "@yeejh96/autosw@0.1.2", "mcp"]
+args = ["/d", "/c", "npx", "--yes", "@yeejh96/autosw@0.1.3", "mcp"]
 startup_timeout_sec = 120
 tool_timeout_sec = 180
 
@@ -313,7 +295,7 @@ AI는 [문서 작성 스킬](skills/autosw-document/SKILL.md)을 따라 필요�
 **MCP 설치 업데이트:** `npx ... setup`을 다시 실행해도 기존 설정을 덮어쓰지 않습니다. 현재 작업 폴더와 `.codex/config.toml`, `.agents/skills/autosw-document`를 보관하고 다음처럼 Codex에 요청하세요.
 
 ```text
-autosw README를 확인하고 현재 연결을 0.1.2로 업데이트해줘.
+autosw README를 확인하고 현재 연결을 최신 배포판으로 업데이트해줘.
 현재 작업 폴더와 실행 버전을 먼저 확인해줘.
 새 버전을 별도 시험 폴더에 설치해 진단한 뒤, 기존 autosw 연결과 작성 지침의 변경 내용을 보여줘.
 다른 MCP 설정과 내가 수정한 지침, 기관 양식, 원고, 결과물, 개인 장부는 보존해줘.
@@ -332,7 +314,7 @@ npm 방식은 기존 TOML의 autosw 실행 패키지 버전과 작성 지침을 
 |---|---|
 | `node`, `npx.cmd`를 찾을 수 없음 | Node 설치 완료 여부 확인 → PowerShell·Codex 완전 종료 후 재실행 → 버전 확인 |
 | `npm.ps1`·`npx.ps1` 실행 정책 오류 | 안내의 `npm.cmd`·`npx.cmd` 사용. 실행 정책을 풀지 않음 |
-| Node 버전 오류 | 지원 범위 24.22.1 이상 25 미만 확인. 다른 앱의 Node는 임의 교체하지 않음 |
+| Node 버전 오류 | 최소 요구 버전 24.22.1 이상인지 확인하고 최신 LTS 사용. 다른 앱의 Node는 임의 교체하지 않음 |
 | MSI 권한·해시·다운로드 오류 | 다음 단계로 넘어가지 않고 오류 문구를 설치 담당자에게 전달 |
 | `setup`이 미리보기만 보여 줌 | 비대화형 터미널임. 폴더 지정 `setup --npm --workspace` 미리보기 확인 후 `--apply` 사용 |
 | 기존 설정이 있다고 중단 | 해당 개인 폴더의 기존 연결 확인. 새 폴더를 선택하거나 autosw 부분만 검토해 갱신 |
