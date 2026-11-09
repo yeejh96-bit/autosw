@@ -1,16 +1,23 @@
 {
   "name": "@yeejh96/autosw",
-  "version": "0.1.3",
-  "private": false,
-  "publishConfig": { "registry": "https://registry.npmjs.org/", "access": "public" },
-  "repository": { "type": "git", "url": "git+https://github.com/yeejh96-bit/autosw.git" },
+  "version": "0.1.4",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yeejh96-bit/autosw.git"
+  },
   "homepage": "https://github.com/yeejh96-bit/autosw#readme",
-  "bugs": { "url": "https://github.com/yeejh96-bit/autosw/issues" },
+  "bugs": {
+    "url": "https://github.com/yeejh96-bit/autosw/issues"
+  },
   "description": "사회복지 문서 작성·Windows 한글 출력·개인별 인원 실적과 지출 관리",
   "license": "MIT",
-  "bin": { "autosw": "bin/autosw.mjs" },
-  "engines": { "node": ">=24.22.1" },
-  "files": ["bin", "src", "engine", "vendor", "scripts", "skills", "docs", "examples", "tests", "AGENTS.md", "plugin.json", "mcp.json", "NOTICE", ".nvmrc"],
+  "bin": {
+    "autosw": "bin/autosw.mjs"
+  },
+  "engines": {
+    "node": ">=24.22.1"
+  },
   "scripts": {
     "doctor": "node bin/autosw.mjs doctor",
     "lint": "node scripts/check.mjs --lint",
@@ -20,7 +27,6 @@
     "check:portable": "node tests/portable.test.mjs"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.32.2",
     "@xmldom/xmldom": "0.9.12",
     "jszip": "3.10.1",
     "playwright-core": "1.49.1",

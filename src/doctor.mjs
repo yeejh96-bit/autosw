@@ -10,8 +10,8 @@ export function doctor(requested) {
   try { assertNode(); checks.push({ name: 'Node', ok: true, version: process.versions.node }); }
   catch (e) { checks.push({ name: 'Node', ok: false, detail: e.message }); }
   checks.push({ name: 'Windows', ok: process.platform === 'win32' });
-  for (const pkg of ['@modelcontextprotocol/sdk', '@xmldom/xmldom', 'jszip', 'playwright-core', 'zod']) {
-    try { require.resolve(pkg === '@modelcontextprotocol/sdk' ? pkg + '/server/mcp.js' : pkg); checks.push({ name: pkg, ok: true }); }
+  for (const pkg of ['@xmldom/xmldom', 'jszip', 'playwright-core', 'zod']) {
+    try { require.resolve(pkg); checks.push({ name: pkg, ok: true }); }
     catch { checks.push({ name: pkg, ok: false, detail: 'npm ci가 필요합니다.' }); }
   }
   if (process.platform === 'win32') {
@@ -21,5 +21,5 @@ export function doctor(requested) {
   const browsers = ['C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Microsoft/Edge/Application/msedge.exe'];
   checks.push({ name: '설치 브라우저', ok: browsers.some(p => fs.existsSync(p)), detail: '자체 미리보기는 Chrome/Edge 또는 기존 Playwright 브라우저를 사용합니다.' });
   const workspace = path.resolve(requested || process.env.AUTOSW_WORKSPACE || defaultWorkspace());
-  return { status: checks.every(c => c.ok) ? 'environment-ready' : 'needs-attention', checks, workspace, workspaceInitialized: fs.existsSync(path.join(workspace, 'autosw.config.json')), note: 'AI 앱 연결과 한글 실제 출력은 별도로 시험해야 합니다.' };
+  return { status: checks.every(c => c.ok) ? 'environment-ready' : 'needs-attention', checks, workspace, workspaceInitialized: fs.existsSync(path.join(workspace, 'autosw.config.json')), note: '한글 실제 출력은 별도로 시험해야 합니다.' };
 }

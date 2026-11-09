@@ -30,12 +30,12 @@ function docs() {
     }
     if (path.basename(file) === 'SKILL.md' && (!content.startsWith('---') || !/^name: autosw-/m.test(content) || !/^description: .+/m.test(content))) throw new Error(`스킬 머리말 오류: ${file}`);
   }
-  for (const name of ['README.md', 'AGENTS.md', 'LICENSE', 'NOTICE', 'plugin.json', 'mcp.json', 'skills/autosw-document/SKILL.md']) if (!fs.existsSync(path.join(packageRoot, name))) throw new Error(`필수 파일 누락: ${name}`);
+  for (const name of ['README.md', 'AGENTS.md', 'LICENSE', 'NOTICE', 'plugin.json', 'skills/autosw-document/SKILL.md', 'skills/autosw-setup/SKILL.md']) if (!fs.existsSync(path.join(packageRoot, name))) throw new Error(`필수 파일 누락: ${name}`);
   const pkg = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8'));
   const plugin = JSON.parse(fs.readFileSync(path.join(packageRoot, 'plugin.json'), 'utf8'));
-  if (pkg.version !== plugin.version || pkg.private !== false || pkg.publishConfig?.registry !== 'https://registry.npmjs.org/' || pkg.publishConfig?.access !== 'public') throw new Error('배포 메타데이터/대상 레지스트리 불일치');
-  const mcp = JSON.parse(fs.readFileSync(path.join(packageRoot, 'mcp.json'), 'utf8')).mcpServers.autosw;
-  if (mcp.command !== 'cmd.exe' || JSON.stringify(mcp.args) !== JSON.stringify(['/d', '/c', 'npx', '--yes', `${pkg.name}@${pkg.version}`, 'mcp']) || mcp.env?.AUTOSW_WORKSPACE !== '') throw new Error('플러그인 실행 버전·기본 개인 폴더 설정 불일치');
+  if (pkg.version !== plugin.version || pkg.private !== true || pkg.publishConfig || pkg.dependencies['@modelcontextprotocol/sdk'] ||
+      files.some(file => /^\.?mcp\.json$/.test(path.basename(file)))) throw new Error('GitHub 전용 플러그인 구성 불일치');
+  if (plugin.extensions?.['com.openai']?.onboardingSkill !== './skills/autosw-setup/SKILL.md') throw new Error('플러그인 초기 설정 스킬 누락');
   console.log('지침·참조·배포 메타데이터 확인 통과');
 }
 if (!mode || mode === '--lint') {
@@ -46,10 +46,8 @@ if (!mode || mode === '--lint') {
 }
 if (!mode || mode === '--docs') docs();
 if (!mode || mode === '--test') {
-  run(path.join(packageRoot, 'tests', 'setup-npm.test.mjs'));
   run(path.join(packageRoot, 'tests', 'ledger.test.mjs'));
   run(path.join(packageRoot, 'tests', 'service.test.mjs'));
-  run(path.join(packageRoot, 'tests', 'mcp.test.mjs'));
   for (const name of ['test-hwpx-form.mjs', 'test-hwpx-create.mjs', 'test-hwpx-layout.mjs', 'test-hangul-preview.mjs']) run(path.join(packageRoot, 'tests', 'engine', name));
   console.log('자동 검증 통과 (실제 한글 COM·전 페이지 검토는 별도)');
 }

@@ -2,7 +2,7 @@
 
 ## 인원 실적·지출
 
-입력 형식·집계·승인·보존 기준은 [인원·지출 관리](../skills/autosw-document/references/ledger.md)를 따릅니다. CLI도 MCP와 같은 저장기를 사용합니다. `ledger-preview`의 입력 JSON은 `change` 객체 자체입니다. `ledger-query`와 `ledger-report`는 파일을 저장하지 않고 결과를 출력합니다.
+입력 형식·집계·승인·보존 기준은 [인원·지출 관리](../skills/autosw-document/references/ledger.md)를 따릅니다. `ledger-preview`의 입력 JSON은 `change` 객체 자체입니다. `ledger-query`와 `ledger-report`는 파일을 저장하지 않고 결과를 출력합니다.
 
 ```powershell
 node bin/autosw.mjs ledger-query --workspace "D:\autosw-work"
@@ -13,7 +13,7 @@ node bin/autosw.mjs ledger-report --workspace "D:\autosw-work" --program <프로
 
 `--approved`는 미리보기 내용을 실제 사용자에게 확인받은 뒤에만 지정합니다. 수정·삭제도 같은 미리보기와 승인 명령을 사용합니다. `--kind attendance` 또는 `--kind expense`로 한 종류만 조회할 수 있습니다. 조회하지 않은 항목은 0이 아닌 미조회로 표시됩니다. 반환된 `document`를 JSON 원고로 저장하면 특수문자를 유지하여 기존 `preview --kind create` 경로로 한글파일을 생성할 수 있습니다.
 
-모든 명령은 autosw 설치 폴더에서 실행합니다. 업무 경로는 `--workspace`로 지정하며 그 안의 상대경로를 입력합니다. 명령의 오류와 반환 상태를 확인하고, 미지원·검증 대기를 성공으로 처리하지 않습니다.
+예시는 autosw 설치 폴더에서 실행합니다. Codex에서는 설치된 플러그인의 `scripts/autosw.ps1` 전체 경로로 호출하며, 아래의 `node bin/autosw.mjs`와 같은 하위 명령을 사용합니다. 이 진입점은 첫 설정에서 선택한 Node를 사용합니다. 업무 경로는 `--workspace`로 지정하며 그 안의 상대경로를 입력합니다. 명령의 오류와 반환 상태를 확인하고, 미지원·검증 대기를 성공으로 처리하지 않습니다.
 
 ## 환경·자료·지침 확인
 
@@ -27,7 +27,7 @@ node bin/autosw.mjs inspect --workspace "D:\autosw-work" --input "templates/양�
 
 `guide`는 선택 가능한 지침 목록을 제공합니다. `--topic`에는 목록에 표시된 실제 Markdown 경로를 사용합니다. 스킬 본문과 필요한 단계·문서 종류만 읽습니다.
 
-작업 시작 시 `autosw.config.json`의 `institution`과 `writingPreferences`를 기관명·문체 기본값으로 읽습니다. 빈 값은 추측하지 않고 이번 요청과 지정 양식을 우선합니다. MCP에서는 `autosw_read_text`의 `input`에 `autosw.config.json`을 지정합니다.
+작업 시작 시 `autosw.config.json`의 `institution`과 `writingPreferences`를 기관명·문체 기본값으로 읽습니다. 빈 값은 추측하지 않고 이번 요청과 지정 양식을 우선합니다.
 
 양식이 HWP라면 `check-hangul`로 새 HWPX 사본과 PDF를 만든 뒤 그 파일을 읽습니다. `hwp-source-needs-review`는 원문 내용의 자동 대조가 완료되지 않은 상태이며 바로 `publish`할 수 없습니다. 사용자가 HWP 원문과 변환본을 대조한 뒤 변환 HWPX를 새 작성 절차의 입력으로 사용합니다. 변환 결과의 실제 형식과 상태를 확인하고 원본을 보존합니다.
 
@@ -56,7 +56,7 @@ node bin/autosw.mjs verify --workspace "D:\autosw-work" --plan <작업ID>
 node bin/autosw.mjs guide --topic "references/form-input.md"
 ```
 
-MCP만 연결했다면 `autosw_guide`의 `topic`에 `references/form-input.md`를 지정합니다. 요청 JSON은 `autosw_write_draft`로 `drafts/`에 새로 저장한 뒤 `autosw_preview`의 `request`로 넘깁니다. 입력을 결정하지 못한 항목, 보존할 영역, 지원하지 않는 위치는 미리보기 전에 구분합니다.
+요청 JSON은 `drafts/`에 새 파일로 저장한 뒤 `preview`의 `--request`로 넘깁니다. 입력을 결정하지 못한 항목, 보존할 영역, 지원하지 않는 위치는 미리보기 전에 구분합니다.
 
 ```powershell
 node bin/autosw.mjs preview --workspace "D:\autosw-work" --kind fill --input "templates/양식.hwpx" --request "drafts/입력.json" --output "outputs/결과.hwpx"

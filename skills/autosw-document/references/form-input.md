@@ -1,6 +1,6 @@
 # 양식 입력 JSON
 
-기존 HWPX 양식에 승인된 본문을 넣는 `fill` 미리보기를 준비할 때 읽는다. 먼저 `autosw_inspect` 또는 명령행 `inspect`로 사용할 파일을 읽는다. 요청 JSON은 UTF-8로 `drafts/`에 새 파일로 저장한다. MCP에서는 `autosw_write_draft`로 저장하고 `autosw_preview`의 `kind`를 `fill`, `request`를 저장한 JSON 경로로 지정한다.
+기존 HWPX 양식에 승인된 본문을 넣는 `fill` 미리보기를 준비할 때 읽는다. 먼저 `inspect`로 사용할 파일을 읽는다. 요청 JSON은 UTF-8로 `drafts/`에 새 파일로 저장한다. `preview --kind fill`의 `--request`에 저장한 JSON 경로를 지정한다.
 
 ## 최상위 필드
 

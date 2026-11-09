@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 export const packageRoot = fileURLToPath(new URL('../', import.meta.url));
@@ -8,7 +9,16 @@ export function assertNode() {
   const [major, minor, patch] = process.versions.node.split('.').map(Number);
   if (major < 24 || (major === 24 && (minor < 22 || (minor === 22 && patch < 1)))) throw new Error('Node 24.22.1 이상이 필요합니다. 최신 Node.js LTS를 설치하세요.');
 }
-export const defaultWorkspace = () => path.join(os.homedir(), 'Documents', 'autosw-workspace');
+export function defaultWorkspace() {
+  if (process.platform !== 'win32') return path.join(os.homedir(), 'Documents', 'autosw-workspace');
+  const desktop = spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+    '[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); [Console]::Write([Environment]::GetFolderPath("DesktopDirectory"))'
+  ], { encoding: 'utf8', windowsHide: true, timeout: 15000 });
+  if (desktop.status !== 0 || !path.isAbsolute(desktop.stdout || '')) {
+    throw new Error('Windows 바탕화면 위치를 확인하지 못했습니다. --workspace <개인폴더>로 위치를 지정하세요.');
+  }
+  return path.join(desktop.stdout, 'autosw-workspace');
+}
 export function inside(root, candidate) {
   const rel = path.relative(root, candidate);
   return rel === '' || (!rel.startsWith('..' + path.sep) && rel !== '..' && !path.isAbsolute(rel));

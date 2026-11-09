@@ -2,19 +2,17 @@
 import { assertNode, initialize } from '../src/workspace.mjs';
 import { doctor } from '../src/doctor.mjs';
 import { guide } from '../src/guides.mjs';
-import { setup } from '../src/setup.mjs';
-import { npmSetup, setupWizard } from '../src/setup-npm.mjs';
 import * as service from '../src/service.mjs';
 
 const commands = {
-  init: ['workspace'], doctor: ['workspace'], guide: ['topic'], setup: ['workspace', 'apply', 'npm'],
+  init: ['workspace'], doctor: ['workspace'], guide: ['topic'],
   list: ['workspace'], read: ['workspace', 'input'], 'write-draft': ['workspace', 'output', 'content'],
   inspect: ['workspace', 'input'], preview: ['workspace', 'kind', 'input', 'output', 'request'],
   apply: ['workspace', 'plan', 'confirm'], verify: ['workspace', 'plan'],
   render: ['workspace', 'input', 'output', 'engine'], 'check-hangul': ['workspace', 'input', 'output', 'pdf', 'plan', 'format', 'verification'],
   'ledger-preview': ['workspace', 'input'], 'ledger-apply': ['workspace', 'plan', 'confirm', 'approved'],
   'ledger-query': ['workspace', 'program', 'from', 'to', 'kind'], 'ledger-report': ['workspace', 'program', 'from', 'to', 'kind'],
-  publish: ['workspace', 'report', 'confirm', 'output', 'expected', 'reviewed'], mcp: ['workspace']
+  publish: ['workspace', 'report', 'confirm', 'output', 'expected', 'reviewed']
 };
 async function main(args) {
   assertNode();
@@ -28,7 +26,7 @@ async function main(args) {
   for (let i = 0; i < args.length; i++) {
     const key = args[i].slice(2);
     if (!args[i].startsWith('--') || !commands[command].includes(key) || Object.hasOwn(opts, key)) throw new Error('잘못되거나 중복된 인자입니다.');
-    if (['apply', 'reviewed', 'approved', 'npm'].includes(key)) opts[key] = true;
+    if (['reviewed', 'approved'].includes(key)) opts[key] = true;
     else {
       if (args[i + 1] === undefined || args[i + 1].startsWith('--')) throw new Error(`--${key} 값이 필요합니다.`);
       opts[key] = args[++i];
@@ -39,7 +37,6 @@ async function main(args) {
     case 'init': result = initialize(opts.workspace); break;
     case 'doctor': result = doctor(opts.workspace); break;
     case 'guide': result = guide(opts.topic); break;
-    case 'setup': result = opts.npm ? npmSetup(opts.workspace, opts.apply) : !opts.workspace && !opts.apply ? await setupWizard() : setup(opts.workspace, opts.apply); break;
     case 'list': result = service.listFiles(opts.workspace); break;
     case 'read': result = service.readDraft(opts.workspace, opts.input); break;
     case 'write-draft': result = service.writeDraft(opts.workspace, opts.output, opts.content); break;
@@ -56,10 +53,6 @@ async function main(args) {
     case 'ledger-report': {
       const { workspace, ...filter } = opts;
       result = command === 'ledger-query' ? service.ledgerQuery(workspace, filter) : service.ledgerReport(workspace, filter); break;
-    }
-    case 'mcp': {
-      const { startServer } = await import('../src/mcp.mjs');
-      await startServer(opts.workspace); return;
     }
   }
   console.log(JSON.stringify(result, null, 2));
