@@ -34,6 +34,8 @@ function docs() {
   const pkg = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8'));
   const plugin = JSON.parse(fs.readFileSync(path.join(packageRoot, 'plugin.json'), 'utf8'));
   if (pkg.version !== plugin.version || pkg.private !== false || pkg.publishConfig?.registry !== 'https://registry.npmjs.org/' || pkg.publishConfig?.access !== 'public') throw new Error('배포 메타데이터/대상 레지스트리 불일치');
+  const mcp = JSON.parse(fs.readFileSync(path.join(packageRoot, 'mcp.json'), 'utf8')).mcpServers.autosw;
+  if (mcp.command !== 'cmd.exe' || JSON.stringify(mcp.args) !== JSON.stringify(['/d', '/c', 'npx', '--yes', `${pkg.name}@${pkg.version}`, 'mcp']) || mcp.env?.AUTOSW_WORKSPACE !== '') throw new Error('플러그인 실행 버전·기본 개인 폴더 설정 불일치');
   console.log('지침·참조·배포 메타데이터 확인 통과');
 }
 if (!mode || mode === '--lint') {

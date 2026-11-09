@@ -3,9 +3,9 @@
   "mcpServers": {
     "autosw": {
       "type": "stdio",
-      "command": "node",
-      "args": ["${PLUGIN_ROOT}/bin/autosw.mjs", "mcp"],
-      "cwd": "${PLUGIN_ROOT}"
+      "command": "cmd.exe",
+      "args": ["/d", "/c", "npx", "--yes", "@yeejh96/autosw@0.1.1", "mcp"],
+      "env": { "AUTOSW_WORKSPACE": "" }
     }
   }
 }
