@@ -4,6 +4,24 @@
 
 Windows용 초기판입니다. 소스는 [GitHub](https://github.com/yeejh96-bit/autosw), 실행 패키지는 [npm](https://www.npmjs.com/package/@yeejh96/autosw)에서 제공합니다. OpenAI 공식 플러그인 디렉터리 등록본은 아닙니다.
 
+## 빠른 설치
+
+Windows PowerShell에서 Node를 설치합니다. 이미 지원 버전의 Node가 있으면 첫 명령은 건너뜁니다.
+
+```powershell
+winget install --id OpenJS.NodeJS.LTS --exact --version 24.22.1
+```
+
+설치 후 **PowerShell과 Codex를 완전히 종료했다가 다시 열고**, autosw를 설치합니다.
+
+```powershell
+npx.cmd -y @yeejh96/autosw@0.1.2 setup
+```
+
+연결 내용을 확인하고 **Y**를 입력한 뒤, 안내된 개인 작업 폴더를 Codex에서 엽니다. 새 대화에서 **“autosw 환경을 확인하고 작성 지침을 읽어줘”**라고 요청하면 됩니다.
+
+Node 명령은 winget에서 설치 가능한 지원 버전 `24.22.1`로 고정했습니다. 설치창·권한 확인은 직접 진행하세요. 다른 버전의 Node를 사용 중이거나 winget이 없으면 [Node 준비](#node-준비)를 확인하세요. [Microsoft winget 안내](https://learn.microsoft.com/windows/package-manager/winget/install)
+
 ## 하는 일
 
 - 계획서·결과보고서·회의록·복명서·설문지 등 문서의 필요한 정보를 확인하고 초안을 작성합니다.
@@ -30,7 +48,7 @@ Windows용 초기판입니다. 소스는 [GitHub](https://github.com/yeejh96-bit
 
 ## 설치 방법 선택
 
-**처음 쓰는 직원은 아래 설치 요청문을 Codex에 붙여넣으면 됩니다.** 직접 설치하려면 Node 준비 후 MCP 설치 명령을 실행하세요. npm·GitHub 가입, 게시자용 보안키, autosw 전용 API 키는 필요하지 않습니다. 사용하는 AI 앱의 계정과 이용 권한은 별도입니다.
+**일반적인 설치는 위의 [빠른 설치](#빠른-설치) 명령 두 개로 진행합니다.** 아래는 다른 설치 경로나 문제 해결이 필요할 때 참고하세요. npm·GitHub 가입, 게시자용 보안키, autosw 전용 API 키는 필요하지 않습니다. 사용하는 AI 앱의 계정과 이용 권한은 별도입니다.
 
 | 현재 상황 | 진행할 경로 |
 |---|---|
@@ -66,7 +84,12 @@ node --version
 npm.cmd --version
 ```
 
-Node가 없다면 **Windows x64 PC**에서 다음 블록 전체를 실행하세요. 공식 MSI를 내려받아 SHA256을 대조한 뒤 설치창을 엽니다. 설치창과 Windows 권한 확인은 직접 진행합니다.
+Node가 없다면 먼저 [빠른 설치](#빠른-설치)의 winget 명령을 사용하세요. winget을 사용할 수 없거나 권장 버전 24.22.2를 직접 설치하려면 아래 상세 방법을 펼칩니다.
+
+<details>
+<summary>Node 24.22.2 직접 설치 — winget을 사용할 수 없을 때</summary>
+
+**Windows x64 PC**에서 다음 블록 전체를 실행하세요. 공식 MSI를 내려받아 SHA256을 대조한 뒤 설치창을 엽니다. 설치창과 Windows 권한 확인은 직접 진행합니다.
 
 ```powershell
 & {
@@ -91,12 +114,14 @@ ARM64는 [공식 배포 페이지](https://nodejs.org/en/blog/release/v24.22.2)�
 
 설치 파일과 해시는 [공식 SHA256 목록](https://nodejs.org/dist/v24.22.2/SHASUMS256.txt)을 기준으로 고정했습니다. 보안 패치 검토 시 [Node 보안 공지](https://nodejs.org/en/blog/vulnerability)를 확인하고 주소·해시·지원 버전을 함께 갱신합니다. 설치된 Node를 자동 업데이트하지 않습니다.
 
+</details>
+
 ### MCP 설치 (권장)
 
 지원 버전의 Node가 준비된 새 PowerShell에서 실행합니다. 처음 내려받을 때 인터넷 연결이 필요합니다.
 
 ```powershell
-npx.cmd -y @yeejh96/autosw@0.1.1 setup
+npx.cmd -y @yeejh96/autosw@0.1.2 setup
 ```
 
 표시된 개인 작업 폴더와 연결 내용을 확인하고 **Y**를 입력합니다. 기본 위치는 사용자 홈 아래 `Documents\autosw-workspace`입니다. Codex용 MCP 설정과 작성 지침을 그 폴더에 설치하며 전역 설정은 바꾸지 않습니다. 기존 설정이나 스킬이 있으면 보존하고 중단합니다.
@@ -109,13 +134,13 @@ npx.cmd -y @yeejh96/autosw@0.1.1 setup
 
 ```powershell
 $autoswWorkspace = Join-Path $env:USERPROFILE 'Documents\autosw-workspace'
-npx.cmd -y @yeejh96/autosw@0.1.1 setup --npm --workspace "$autoswWorkspace"
+npx.cmd -y @yeejh96/autosw@0.1.2 setup --npm --workspace "$autoswWorkspace"
 ```
 
 표시된 내용으로 설치하려면 같은 PowerShell에서 실행합니다.
 
 ```powershell
-npx.cmd -y @yeejh96/autosw@0.1.1 setup --npm --workspace "$autoswWorkspace" --apply
+npx.cmd -y @yeejh96/autosw@0.1.2 setup --npm --workspace "$autoswWorkspace" --apply
 ```
 
 폴더 경로에는 따옴표를 유지하세요. 기존 프로젝트 설정이 있으면 아래 [기존 설치 업데이트](#업데이트와-제거)를 따릅니다. 서로 다른 직원의 자료는 각자의 PC·Windows 사용자·개인 작업 폴더로 분리합니다.
@@ -129,7 +154,7 @@ Node 준비를 마친 뒤 PowerShell에서 실행합니다. 이 경로는 **Code
 카탈로그 등록·설치·활성 상태는 Windows의 Codex CLI 0.159.2 임시 프로필에서 확인했습니다. 직원의 앱 화면과 실제 한글 출력은 설치 후 별도로 확인합니다.
 
 ```powershell
-npx.cmd -y @yeejh96/autosw@0.1.1 init
+npx.cmd -y @yeejh96/autosw@0.1.2 init
 codex plugin marketplace add yeejh96-bit/autosw --ref main
 codex plugin add autosw@autosw-marketplace
 ```
@@ -183,9 +208,9 @@ powershell.exe -NoProfile -File scripts/autosw.ps1 setup --workspace "$autoswWor
 
 ```powershell
 $autoswWorkspace = Join-Path $env:USERPROFILE 'Documents\autosw-workspace'
-npx.cmd -y @yeejh96/autosw@0.1.1 init --workspace "$autoswWorkspace"
-npx.cmd -y @yeejh96/autosw@0.1.1 doctor --workspace "$autoswWorkspace"
-npx.cmd -y @yeejh96/autosw@0.1.1 guide
+npx.cmd -y @yeejh96/autosw@0.1.2 init --workspace "$autoswWorkspace"
+npx.cmd -y @yeejh96/autosw@0.1.2 doctor --workspace "$autoswWorkspace"
+npx.cmd -y @yeejh96/autosw@0.1.2 guide
 ```
 
 문서 생성·인원 및 지출 입력 명령은 [명령행 사용법](docs/usage.md)을 따릅니다. `publish`는 검토한 문서를 로컬 완성본으로 저장하는 명령입니다. GitHub나 npm에 업무 자료를 올리지 않습니다. JavaScript 라이브러리의 공개 API는 제공하지 않습니다.
@@ -197,7 +222,7 @@ npx.cmd -y @yeejh96/autosw@0.1.1 guide
   "mcpServers": {
     "autosw": {
       "command": "cmd.exe",
-      "args": ["/d", "/c", "npx", "--yes", "@yeejh96/autosw@0.1.1", "mcp"],
+      "args": ["/d", "/c", "npx", "--yes", "@yeejh96/autosw@0.1.2", "mcp"],
       "env": {"AUTOSW_WORKSPACE": "D:\\autosw-work"}
     }
   }
@@ -209,7 +234,7 @@ npx.cmd -y @yeejh96/autosw@0.1.1 guide
 ```toml
 [mcp_servers.autosw]
 command = "cmd.exe"
-args = ["/d", "/c", "npx", "--yes", "@yeejh96/autosw@0.1.1", "mcp"]
+args = ["/d", "/c", "npx", "--yes", "@yeejh96/autosw@0.1.2", "mcp"]
 startup_timeout_sec = 120
 tool_timeout_sec = 180
 
@@ -288,7 +313,7 @@ AI는 [문서 작성 스킬](skills/autosw-document/SKILL.md)을 따라 필요�
 **MCP 설치 업데이트:** `npx ... setup`을 다시 실행해도 기존 설정을 덮어쓰지 않습니다. 현재 작업 폴더와 `.codex/config.toml`, `.agents/skills/autosw-document`를 보관하고 다음처럼 Codex에 요청하세요.
 
 ```text
-autosw README를 확인하고 현재 연결을 0.1.1로 업데이트해줘.
+autosw README를 확인하고 현재 연결을 0.1.2로 업데이트해줘.
 현재 작업 폴더와 실행 버전을 먼저 확인해줘.
 새 버전을 별도 시험 폴더에 설치해 진단한 뒤, 기존 autosw 연결과 작성 지침의 변경 내용을 보여줘.
 다른 MCP 설정과 내가 수정한 지침, 기관 양식, 원고, 결과물, 개인 장부는 보존해줘.

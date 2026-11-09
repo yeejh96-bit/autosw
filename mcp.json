@@ -4,7 +4,7 @@
     "autosw": {
       "type": "stdio",
       "command": "cmd.exe",
-      "args": ["/d", "/c", "npx", "--yes", "@yeejh96/autosw@0.1.1", "mcp"],
+      "args": ["/d", "/c", "npx", "--yes", "@yeejh96/autosw@0.1.2", "mcp"],
       "env": { "AUTOSW_WORKSPACE": "" }
     }
   }
