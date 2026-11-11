@@ -2,9 +2,16 @@
 
 autosw는 GitHub 저장소의 Codex 플러그인으로 배포합니다. 공개 자체는 사용자가 승인한 범위에서 진행합니다.
 
-1. 독립 경로에 플러그인을 설치합니다. 지원 Node가 있는 환경과 없는 환경에서 처음 설정을 시험합니다. 새 실행 환경은 공식 다운로드의 SHA256과 대조합니다.
-2. 소스만 복사한 환경에서 `npm run check`와 `npm run check:portable`를 실행합니다. 지원 최저 Node와 [공식 최신 LTS](https://nodejs.org/en/download)에서 확인합니다.
-3. 공개 파일에 스킬·실행 코드·합성 예제·고지가 포함되고 업무 폴더·로그·자격 증명·개인 설정·로컬 실행 파일이 제외됐는지 확인합니다.
-4. 실제 Codex 앱에서 설치·첫 설정·다시 열기·문서와 장부 명령을 시험합니다. 한글 검증은 합성 문서의 열기·저장·재열기·PDF 전 페이지 확인과 내용 대조를 따로 기록합니다.
-5. 기존 업무 폴더의 사용, 폴더 이동, 업데이트·제거에서 사용자 자료가 보존되는지 확인합니다. 확인하지 못한 단계는 구분하여 기록합니다.
-6. 플러그인 버전과 실행 프로젝트 버전, 카탈로그 경로, 라이선스를 확인하고 GitHub 배포 상태를 검증합니다.
+1. Rust 1.89 이상 및 Visual C++ x64 빌드 도구가 있는 개발자 PowerShell에서 아래를 실행합니다. `Cargo.toml`과 `plugin.json`의 버전을 맞춥니다.
+
+   ```powershell
+   cargo fmt --all -- --check
+   cargo clippy --locked --all-targets --target x86_64-pc-windows-msvc -- -D warnings
+   cargo test --locked --target x86_64-pc-windows-msvc
+   .\scripts\package.ps1
+   .\scripts\package.ps1 -Check
+   ```
+
+2. `runtime/`의 배포용 실행 파일·확인값·라이선스와 스킬을 함께 배포합니다. `target/`, 업무 폴더, 로그, 자격 증명, 개인 설정을 포함하지 않습니다.
+3. PowerShell 7에서 `./tests/plugin-install.ps1`을 실행합니다. 별도 Codex 설정과 합성 업무 폴더로 Windows PowerShell의 신규 설치·첫 설정, 이전 Git 카탈로그에서의 업데이트·장부 보존을 확인합니다. Git과 Codex CLI가 필요합니다.
+4. 직원 PC의 실제 Codex 앱에서 설치·업데이트·다시 열기를 시험합니다. 한글 검증은 합성 문서의 열기·저장·재열기·PDF 전 페이지 확인과 내용 대조를 따로 기록합니다. 실행하지 않은 단계는 구분합니다.

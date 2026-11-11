@@ -8,3 +8,4 @@ dist/
 workspace/
 .autosw/
 autosw.config.json
+/target/

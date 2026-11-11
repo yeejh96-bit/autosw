@@ -1,0 +1,29 @@
+{
+  "derivedFrom": "kordoc (MIT), Copyright 2026 chrisryugj",
+  "upstreamCommit": "28c699737ef5e66cceb2d0bc449700cb3578780c",
+  "referenceCommit": "402f770c1814fdad09b2a530930caba6fa5d6817",
+  "transformation": "Static tables exported after original deterministic initialization; no glyphs measured or original numeric values changed.",
+  "sources": [
+    {
+      "path": "tests/legacy/layout/vendor/hwpx/font-metrics.mjs",
+      "sha256": "ba705215a0e7fa5a0de1fa63ca6ea9e77f1d11769ae774815434afeaee18c2d8"
+    },
+    {
+      "path": "tests/legacy/layout/vendor/hwpx/hft-latin-widths.mjs",
+      "sha256": "9e04c88a4faf01893d02c15599a47420477603bb13fda3ae31b6f1f37d5f5e5e"
+    },
+    {
+      "path": "tests/legacy/layout/vendor/hwpx/face-width-fix.mjs",
+      "sha256": "9310300d362698d0824b23b18c2d5b0eb0d56006382e3978dfa03ac32a0109e9"
+    },
+    {
+      "path": "tests/legacy/layout/vendor/hwpx/text-metrics.mjs",
+      "sha256": "8127faada612c6ea7b47495fcc0dc9b60d718c19e9827df2783ba6fb30e78d5e"
+    },
+    {
+      "path": "tests/legacy/layout/vendor/hwpx/seoul-font-widths.mjs",
+      "sha256": "afd0ec4a0017e5f97cc1e79b1b30a599dcccb5f4891eba020b38b829e6397997"
+    }
+  ],
+  "outputSha256": "0349c739edf6c88b0833a02e366f3412d4f43f34621c92fa98d958faf3e12bae"
+}

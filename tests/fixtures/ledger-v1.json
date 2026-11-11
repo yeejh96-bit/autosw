@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "revision": 6,
+  "attendance": [
+    {
+      "id": "b111d179-f215-41d1-808b-05bcc1809f7e",
+      "program": "합성 *교육* [A]",
+      "date": "2026-11-09",
+      "session": "1회기",
+      "count": 2,
+      "participantIds": [
+        "A1",
+        "A2"
+      ],
+      "note": ""
+    },
+    {
+      "id": "fc370fd1-2f1f-43be-ab4c-0c50c4959939",
+      "program": "합성 *교육* [A]",
+      "date": "2026-11-09",
+      "session": "2회기",
+      "count": 3,
+      "note": ""
+    }
+  ],
+  "expense": [
+    {
+      "id": "35244a53-be47-4c67-a7e2-84c3f23a3bd7",
+      "program": "합성 *교육* [A]",
+      "date": "2026-11-09",
+      "entryKey": "영수증/1",
+      "item": "합성 교재",
+      "amount": 1500,
+      "note": ""
+    }
+  ],
+  "history": [
+    {
+      "revision": 1,
+      "planId": "2f6ff4cc-c880-49bc-817e-d22614917e42",
+      "kind": "attendance",
+      "operation": "add",
+      "reason": "",
+      "before": null,
+      "after": {
+        "id": "b111d179-f215-41d1-808b-05bcc1809f7e",
+        "program": "합성 *교육* [A]",
+        "date": "2026-11-09",
+        "session": "1회기",
+        "count": 2,
+        "participantIds": [
+          "A1",
+          "A2"
+        ],
+        "note": ""
+      },
+      "recordedAt": "2026-11-11T03:48:25.646Z"
+    },
+    {
+      "revision": 2,
+      "planId": "e93870e5-534a-4922-9c86-71b52385ab86",
+      "kind": "attendance",
+      "operation": "add",
+      "reason": "",
+      "before": null,
+      "after": {
+        "id": "fc370fd1-2f1f-43be-ab4c-0c50c4959939",
+        "program": "합성 *교육* [A]",
+        "date": "2026-11-09",
+        "session": "2회기",
+        "count": 3,
+        "note": ""
+      },
+      "recordedAt": "2026-11-11T03:48:25.719Z"
+    },
+    {
+      "revision": 3,
+      "planId": "91fb9968-2445-4be8-b9f1-4ac2b16cb0da",
+      "kind": "attendance",
+      "operation": "add",
+      "reason": "",
+      "before": null,
+      "after": {
+        "id": "75bbe402-df5a-4623-b81c-5ceb41699e63",
+        "program": "합성 *교육* [A]",
+        "date": "2026-11-09",
+        "session": "취소 회기",
+        "count": 1,
+        "participantIds": [
+          "A3"
+        ],
+        "note": ""
+      },
+      "recordedAt": "2026-11-11T03:48:25.789Z"
+    },
+    {
+      "revision": 4,
+      "planId": "04e69c13-809f-45ba-a75d-3f1d644783fb",
+      "kind": "attendance",
+      "operation": "delete",
+      "reason": "합성 취소",
+      "before": {
+        "id": "75bbe402-df5a-4623-b81c-5ceb41699e63",
+        "program": "합성 *교육* [A]",
+        "date": "2026-11-09",
+        "session": "취소 회기",
+        "count": 1,
+        "participantIds": [
+          "A3"
+        ],
+        "note": ""
+      },
+      "after": null,
+      "recordedAt": "2026-11-11T03:48:25.860Z"
+    },
+    {
+      "revision": 5,
+      "planId": "f4afbed4-419d-46ba-b027-3e58d31e72eb",
+      "kind": "expense",
+      "operation": "add",
+      "reason": "",
+      "before": null,
+      "after": {
+        "id": "35244a53-be47-4c67-a7e2-84c3f23a3bd7",
+        "program": "합성 *교육* [A]",
+        "date": "2026-11-09",
+        "entryKey": "영수증/1",
+        "item": "합성 교재",
+        "amount": 1200,
+        "note": ""
+      },
+      "recordedAt": "2026-11-11T03:48:25.939Z"
+    },
+    {
+      "revision": 6,
+      "planId": "40db49da-9d8f-420e-b418-10c6079f0a71",
+      "kind": "expense",
+      "operation": "update",
+      "reason": "합성 정정",
+      "before": {
+        "id": "35244a53-be47-4c67-a7e2-84c3f23a3bd7",
+        "program": "합성 *교육* [A]",
+        "date": "2026-11-09",
+        "entryKey": "영수증/1",
+        "item": "합성 교재",
+        "amount": 1200,
+        "note": ""
+      },
+      "after": {
+        "id": "35244a53-be47-4c67-a7e2-84c3f23a3bd7",
+        "program": "합성 *교육* [A]",
+        "date": "2026-11-09",
+        "entryKey": "영수증/1",
+        "item": "합성 교재",
+        "amount": 1500,
+        "note": ""
+      },
+      "recordedAt": "2026-11-11T03:48:26.019Z"
+    }
+  ],
+  "applied": [
+    {
+      "planId": "2f6ff4cc-c880-49bc-817e-d22614917e42",
+      "confirmHash": "029924fc29da1f85b34789b732819cec1c7b9fc24f032c16370dd1777edf5989",
+      "result": {
+        "status": "ledger-applied",
+        "planId": "2f6ff4cc-c880-49bc-817e-d22614917e42",
+        "recordId": "b111d179-f215-41d1-808b-05bcc1809f7e",
+        "kind": "attendance",
+        "operation": "add",
+        "revision": 1
+      }
+    },
+    {
+      "planId": "e93870e5-534a-4922-9c86-71b52385ab86",
+      "confirmHash": "b07f6b7e3198564779d060e2c7f9ac3d65eaa43132b3a9f3b87da1a0c1742d13",
+      "result": {
+        "status": "ledger-applied",
+        "planId": "e93870e5-534a-4922-9c86-71b52385ab86",
+        "recordId": "fc370fd1-2f1f-43be-ab4c-0c50c4959939",
+        "kind": "attendance",
+        "operation": "add",
+        "revision": 2
+      }
+    },
+    {
+      "planId": "91fb9968-2445-4be8-b9f1-4ac2b16cb0da",
+      "confirmHash": "14e84d33d74cbccae2497ac6de699ec2de5543bd4c2d5437050a830b2d2a37a3",
+      "result": {
+        "status": "ledger-applied",
+        "planId": "91fb9968-2445-4be8-b9f1-4ac2b16cb0da",
+        "recordId": "75bbe402-df5a-4623-b81c-5ceb41699e63",
+        "kind": "attendance",
+        "operation": "add",
+        "revision": 3
+      }
+    },
+    {
+      "planId": "04e69c13-809f-45ba-a75d-3f1d644783fb",
+      "confirmHash": "f4ccd9927fc62b65cd71f23591dc669ea95022cd3dd1cb99a3b0b9e74f7b2c43",
+      "result": {
+        "status": "ledger-applied",
+        "planId": "04e69c13-809f-45ba-a75d-3f1d644783fb",
+        "recordId": "75bbe402-df5a-4623-b81c-5ceb41699e63",
+        "kind": "attendance",
+        "operation": "delete",
+        "revision": 4
+      }
+    },
+    {
+      "planId": "f4afbed4-419d-46ba-b027-3e58d31e72eb",
+      "confirmHash": "c0bb1ac0a21b396557bfeedc62c7db508f09683c938b217248ec905df701de21",
+      "result": {
+        "status": "ledger-applied",
+        "planId": "f4afbed4-419d-46ba-b027-3e58d31e72eb",
+        "recordId": "35244a53-be47-4c67-a7e2-84c3f23a3bd7",
+        "kind": "expense",
+        "operation": "add",
+        "revision": 5
+      }
+    },
+    {
+      "planId": "40db49da-9d8f-420e-b418-10c6079f0a71",
+      "confirmHash": "2b0ed82c1f309284673d07f21ea775b38b714a5483337ad0965a56869102822d",
+      "result": {
+        "status": "ledger-applied",
+        "planId": "40db49da-9d8f-420e-b418-10c6079f0a71",
+        "recordId": "35244a53-be47-4c67-a7e2-84c3f23a3bd7",
+        "kind": "expense",
+        "operation": "update",
+        "revision": 6
+      }
+    }
+  ]
+}
