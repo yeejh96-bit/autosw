@@ -21,15 +21,16 @@
 
 ## 설치 환경
 
-Windows x64의 Codex 로컬 플러그인으로 설치합니다. 실행 파일이 플러그인에 포함되어 Node나 Rust 설치와 별도 다운로드가 필요하지 않습니다. 설치 순서는 [README](../README.md#빠른-설치)를 따릅니다.
+Windows x64의 Codex 또는 Claude Code 로컬 플러그인으로 설치합니다. 실행 파일이 플러그인에 포함되어 Node나 Rust 설치와 별도 다운로드가 필요하지 않습니다. 설치 순서는 [README](../README.md#빠른-설치)를 따릅니다.
 
-기본 업무 폴더는 Windows 바탕화면의 `autosw-workspace`입니다. 하위 폴더에 연결 경로나 온라인 전용 파일이 있다면 일반 로컬 폴더를 지정합니다. 폴더를 옮길 때는 전체를 옮기고 새 위치를 Codex에서 엽니다. 웹 ChatGPT·모바일은 이 설치 경로의 범위 밖입니다.
+기본 업무 폴더는 Windows 바탕화면의 `autosw-workspace`입니다. 하위 폴더에 연결 경로나 온라인 전용 파일이 있다면 일반 로컬 폴더를 지정합니다. 폴더를 옮길 때는 전체를 옮기고 새 위치를 Codex나 Claude Code에서 엽니다. 웹 ChatGPT·claude.ai 웹·모바일은 이 설치 경로의 범위 밖입니다.
 
 ## 자주 생기는 상태
 
 | 상태 | 처리 |
 |---|---|
 | PowerShell에서 `codex`를 명령으로 인식하지 못함 | [빠른 설치](../README.md#빠른-설치)에 따라 명령줄용 Codex를 설치하고 PowerShell을 닫았다가 다시 연 뒤 재시도. 계속되면 설치 결과와 명령 검색 경로를 확인 |
+| Claude Code에서 `/autosw:autosw-setup`이 보이지 않음 | `claude plugin list`에서 `autosw@autosw-marketplace`가 켜져 있는지 확인하고 새 대화를 시작. 없으면 [Claude Code 설치 안내](install-claude-code.md)의 2단계를 다시 실행 |
 | 실행 파일이 없거나 버전이 다름 | 플러그인을 다시 설치하거나 업데이트를 다시 적용 |
 | 브라우저·한글이 없음 | `doctor`의 누락 항목을 확인하고 미리보기·한글 검증에 필요한 프로그램을 준비 |
 | 한글 접근 확인창·열기 거절 | 사용자가 직접 허용 여부를 정함. 설정 우회나 일괄 응답을 하지 않음 |

@@ -89,7 +89,7 @@ try {
   $beforeSettings = (Get-FileHash -LiteralPath $settings).Hash
 
   FixtureGit @('rm', '-q', '-r', '--', '.')
-  foreach ($entry in @('.agents','plugin.json','scripts','runtime','skills','docs','README.md','NOTICE','LICENSE','src/hwpx_layout/data')) {
+  foreach ($entry in @('.agents','.claude-plugin','plugin.json','scripts','runtime','skills','docs','README.md','NOTICE','LICENSE','src/hwpx_layout/data')) {
     $destination = Join-Path $feed $entry
     [void][IO.Directory]::CreateDirectory((Split-Path -Parent $destination))
     Copy-Item -LiteralPath (Join-Path $root $entry) -Destination $destination -Recurse

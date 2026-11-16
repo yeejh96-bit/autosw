@@ -1,8 +1,28 @@
 # autosw
 
-Windows용 Codex 플러그인입니다. 사회복지 문서의 초안·검토·한글파일 작성과 개인 인원 실적·지출 관리를 지원합니다. 소스와 설치용 카탈로그는 [GitHub](https://github.com/yeejh96-bit/autosw)에서 제공합니다.
+Windows용 Codex·Claude Code 겸용 플러그인입니다. 사회복지 문서의 초안·검토·한글파일 작성과 개인 인원 실적·지출 관리를 지원합니다. 소스와 설치용 카탈로그는 [GitHub](https://github.com/yeejh96-bit/autosw)에서 제공합니다.
 
 ## 빠른 설치
+
+같은 GitHub 저장소를 Codex와 Claude Code 모두에서 설치할 수 있습니다. 사용하는 AI 도구의 절차 하나만 따르면 됩니다. 업무 폴더는 두 도구가 함께 쓸 수 있습니다.
+
+### Claude Code에서 설치
+
+Windows x64에서 Claude Code(데스크톱 앱 또는 명령줄)와 Git이 필요합니다. Claude Code 대화창에 아래 두 줄을 한 줄씩 입력합니다.
+
+```text
+/plugin marketplace add yeejh96-bit/autosw
+/plugin install autosw@autosw-marketplace
+```
+
+PowerShell에서는 아래 두 줄을 한 줄씩 실행해도 됩니다.
+
+```powershell
+claude plugin marketplace add yeejh96-bit/autosw
+claude plugin install autosw@autosw-marketplace
+```
+
+설치 뒤 새 대화에서 **“autosw 처음 설정해줘”**라고 요청하거나 `/autosw:autosw-setup`을 입력합니다. 설정이 알려 준 **바탕화면의 업무 폴더**를 Claude Code의 작업 폴더로 열고 새 대화를 시작합니다. 자세한 순서는 [Claude Code 설치 안내](docs/install-claude-code.md)를 참고하세요.
 
 ### Codex 앱에서 요청
 
@@ -15,7 +35,7 @@ https://github.com/yeejh96-bit/autosw
 
 권한 승인이나 앱 재시작이 필요하면 Codex의 안내에 따릅니다.
 
-### PowerShell에서 직접 설치
+### Codex: PowerShell에서 직접 설치
 
 Windows x64에서 Codex 앱과 Git이 필요합니다. Codex 앱이 설치돼 있어도 PowerShell에서 `codex` 명령을 찾지 못할 수 있으므로, 처음 설치할 때는 아래 순서로 진행합니다.
 
@@ -54,7 +74,7 @@ codex plugin add autosw@autosw-marketplace
 | `autosw.config.json` | 기관명과 문체 기본값 |
 | `.autosw/` | 개인 장부와 작업 상태 |
 
-폴더를 옮길 때는 작업을 끝내고 **업무 폴더 전체를 옮긴 뒤** 새 위치를 Codex 프로젝트로 엽니다. 새 작업은 그 프로젝트를 사용합니다. 이동 전에 만든 문서 미리보기나 검증 기록을 재개해야 한다면 새 위치에서 다시 만듭니다.
+폴더를 옮길 때는 작업을 끝내고 **업무 폴더 전체를 옮긴 뒤** 새 위치를 Codex 프로젝트 또는 Claude Code 작업 폴더로 엽니다. 새 작업은 그 프로젝트를 사용합니다. 이동 전에 만든 문서 미리보기나 검증 기록을 재개해야 한다면 새 위치에서 다시 만듭니다.
 
 한글파일의 최종 저장·재열기·PDF 검증에는 설치된 한글 프로그램이 필요합니다. 인원·지출 등록이나 정정은 미리보기 확인과 승인 뒤 저장합니다. 익명 참여자 ID가 없는 회기는 실인원 집계가 미확정입니다. [지원 범위와 문제 해결](docs/support.md)
 
@@ -62,7 +82,9 @@ codex plugin add autosw@autosw-marketplace
 
 ## 업데이트와 제거
 
-`codex plugin marketplace upgrade autosw-marketplace`로 GitHub 카탈로그를 갱신하고 Codex에서 플러그인 업데이트를 적용합니다. 명령줄에서 적용할 때는 `codex plugin add autosw@autosw-marketplace`를 다시 실행합니다. 앱을 다시 열고 기존 업무 폴더를 사용하세요. 새 버전에서도 기존 장부와 설정을 그대로 읽습니다. 이전 버전에서 진행 중이던 문서 미리보기와 한글 검증은 새로 시작합니다. 플러그인은 Codex의 플러그인 메뉴에서 제거할 수 있으며 업무 폴더는 별도로 남습니다.
+**Claude Code**: `claude plugin marketplace update autosw-marketplace`로 카탈로그를 갱신한 뒤 `claude plugin update autosw@autosw-marketplace`를 실행하고 새 대화를 시작합니다. 대화창의 `/plugin` 메뉴에서도 업데이트·제거할 수 있습니다.
+
+**Codex**: `codex plugin marketplace upgrade autosw-marketplace`로 GitHub 카탈로그를 갱신하고 Codex에서 플러그인 업데이트를 적용합니다. 명령줄에서 적용할 때는 `codex plugin add autosw@autosw-marketplace`를 다시 실행합니다. 앱을 다시 열고 기존 업무 폴더를 사용하세요. 새 버전에서도 기존 장부와 설정을 그대로 읽습니다. 이전 버전에서 진행 중이던 문서 미리보기와 한글 검증은 새로 시작합니다. 플러그인은 Codex의 플러그인 메뉴에서 제거할 수 있으며 업무 폴더는 별도로 남습니다.
 
 이전 설치의 연결을 사용하던 경우, 새 플러그인의 업무 폴더로 기존 위치를 지정하세요. 이전 프로젝트의 autosw 연결과 이전 작성 지침을 정리할 때는 대상 항목을 확인한 뒤 제거합니다.
 

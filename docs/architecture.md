@@ -13,10 +13,11 @@ autosw는 로컬 my-system의 문서 작성·한글 출력을 분리하고 개�
 | `src/hwpx_*`·`src/hangul_*` | HWPX 구조 읽기·생성·양식 작성·대조, 배치 미리보기와 한글 검증 |
 | `runtime/` | 배포용 Windows x64 실행 파일·확인값·의존성 고지 |
 | `examples/`·`tests/` | 합성 원고와 재현 시험 |
-| `.agents/plugins/marketplace.json` | GitHub에서 추가하는 Codex 플러그인 카탈로그 |
-| `plugin.json`·`scripts/install.ps1` | GitHub 플러그인 구성과 첫 사용 준비 |
+| `.agents/plugins/marketplace.json`·`plugin.json` | GitHub에서 추가하는 Codex 플러그인 카탈로그와 구성 |
+| `.claude-plugin/marketplace.json`·`.claude-plugin/plugin.json` | GitHub에서 추가하는 Claude Code 플러그인 카탈로그와 구성. 같은 `skills/`·`scripts/`·`runtime/`을 사용 |
+| `scripts/install.ps1` | 첫 사용 준비 |
 
-문서 작성 판단은 스킬이 담당하고, 파일 보호·입력 일치·허용 경로 같은 조건은 실행 도구도 검사합니다. Codex는 설치된 스킬을 따라 플러그인의 명령행을 Windows PowerShell에서 직접 실행합니다.
+문서 작성 판단은 스킬이 담당하고, 파일 보호·입력 일치·허용 경로 같은 조건은 실행 도구도 검사합니다. Codex와 Claude Code는 설치된 같은 스킬을 따라 플러그인의 명령행을 Windows PowerShell에서 직접 실행합니다.
 
 ## 분리한 내용
 

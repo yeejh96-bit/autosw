@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "autosw-marketplace",
+  "description": "사회복지사를 위한 autosw 플러그인 카탈로그",
+  "owner": { "name": "yeejh96-bit", "url": "https://github.com/yeejh96-bit" },
+  "plugins": [
+    {
+      "name": "autosw",
+      "source": "./",
+      "description": "사회복지 문서 작성·한글파일 생성·검증과 개인별 프로그램 인원 실적·지출 관리",
+      "category": "productivity"
+    }
+  ]
+}
