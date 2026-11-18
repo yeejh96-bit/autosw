@@ -200,6 +200,32 @@ fn list_files(
     Ok(())
 }
 
+const OLE_SIGNATURE: [u8; 8] = [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1];
+
+pub(crate) fn is_ole_bytes(bytes: &[u8]) -> bool {
+    bytes.starts_with(&OLE_SIGNATURE)
+}
+
+pub(crate) fn is_ole_document(path: &Path) -> bool {
+    use std::io::Read;
+    let mut signature = [0u8; 8];
+    fs::File::open(path)
+        .and_then(|mut file| file.read_exact(&mut signature))
+        .is_ok_and(|()| is_ole_bytes(&signature))
+}
+
+/// Writes the plain-text Markdown of a DOCX/HWPX without replacing a different result.
+pub(crate) fn write_markdown(
+    bytes: &[u8],
+    kind: &str,
+    filename: &str,
+    target: &Path,
+) -> Result<bool, String> {
+    let day = Local::now().format("%Y-%m-%d").to_string();
+    let content = plain_content(bytes, kind, TextMode::PowerShell, filename, &day)?;
+    save(target, &content, TextMode::PowerShell, false)
+}
+
 pub(crate) fn conversion_paths(
     input: &str,
     output: &str,
@@ -216,12 +242,14 @@ pub(crate) fn conversion_paths(
             return Err("숨김 입력은 기존 PowerShell 경로에서 읽을 수 없습니다.".into());
         }
     }
-    if !metadata.is_dir()
-        && (!metadata.is_file()
-            || !input
-                .extension()
-                .is_some_and(|e| e.to_string_lossy().eq_ignore_ascii_case(kind)))
-    {
+    let has_extension = |name: &str| {
+        input
+            .extension()
+            .is_some_and(|e| e.to_string_lossy().eq_ignore_ascii_case(name))
+    };
+    // 일부 기관 양식은 이름만 .hwpx이고 실제 내용은 HWP(OLE 복합 문서)다.
+    let disguised_hwp = kind == "hwp" && has_extension("hwpx") && is_ole_document(&input);
+    if !metadata.is_dir() && (!metadata.is_file() || !(has_extension(kind) || disguised_hwp)) {
         return Err(format!("입력 파일은 .{kind} 형식이어야 합니다."));
     }
     let canonical_input = fs::canonicalize(&input).map_err(|e| e.to_string())?;
@@ -336,7 +364,7 @@ fn plain_content(
 
 fn execute(args: &[OsString], kind: &str, stdout: &mut String) -> Result<i32, String> {
     let usage = format!(
-        "사용법: my-system convert-{kind} --input \"원본 파일 또는 폴더\" --output \"결과 폴더\"{}",
+        "사용법: autosw convert-{kind} --input \"원본 파일 또는 폴더\" --output \"결과 폴더\"{}",
         if kind == "hwpx" {
             " [--structure-only]"
         } else {
@@ -482,6 +510,36 @@ pub fn run(args: &[OsString], kind: &str) -> (i32, String, String) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn hwp_conversion_accepts_hwpx_named_ole_files_only() {
+        let base = tempfile::tempdir().unwrap();
+        let out = base.path().join("out");
+        let disguised = base.path().join("이름만.hwpx");
+        fs::write(
+            &disguised,
+            [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1, 0],
+        )
+        .unwrap();
+        let paths = conversion_paths(
+            disguised.to_str().unwrap(),
+            out.to_str().unwrap(),
+            "hwp",
+            TextMode::Node,
+        )
+        .unwrap();
+        assert_eq!(paths.files, [disguised]);
+        let real = base.path().join("진짜.hwpx");
+        fs::write(&real, b"PK\x03\x04 synthetic").unwrap();
+        let error = conversion_paths(
+            real.to_str().unwrap(),
+            out.to_str().unwrap(),
+            "hwp",
+            TextMode::Node,
+        )
+        .err()
+        .unwrap();
+        assert!(error.contains(".hwp 형식"));
+    }
     #[test]
     fn existing_markdown_reuses_only_header_date_and_never_overwrites() {
         let base = tempfile::tempdir().unwrap();

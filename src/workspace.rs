@@ -155,6 +155,62 @@ fn normal_name(name: &str, internal: bool) -> Result<()> {
     Ok(())
 }
 
+/// Validates a user path as workspace-relative normal names, without touching the disk.
+pub fn relative(root: &Path, input: &str) -> Result<PathBuf> {
+    let path = Path::new(input);
+    let relative = if path.is_absolute() {
+        path.strip_prefix(root)
+            .map_err(|_| "작업 폴더 밖에는 접근할 수 없습니다.")?
+    } else {
+        path
+    };
+    let mut result = PathBuf::new();
+    for part in relative.components() {
+        let Component::Normal(name) = part else {
+            return Err("작업 폴더 밖 또는 별칭 경로에는 접근할 수 없습니다.".into());
+        };
+        normal_name(name.to_str().ok_or("올바른 경로를 지정하세요.")?, false)?;
+        result.push(name);
+    }
+    if result.as_os_str().is_empty() {
+        return Err("작업 폴더 안의 경로를 지정하세요.".into());
+    }
+    Ok(result)
+}
+
+/// Resolves an ordinary user folder inside the workspace, optionally creating it.
+pub fn user_folder(root: &Path, relative: &Path, create: bool) -> Result<PathBuf> {
+    let mut current = root.to_path_buf();
+    for part in relative.components() {
+        let Component::Normal(name) = part else {
+            return Err("작업 폴더 밖 또는 별칭 경로에는 접근할 수 없습니다.".into());
+        };
+        normal_name(name.to_str().ok_or("올바른 경로를 지정하세요.")?, false)?;
+        current.push(name);
+        if create {
+            match fs::create_dir(&current) {
+                Ok(()) => {}
+                Err(e) if e.kind() == io::ErrorKind::AlreadyExists => {}
+                Err(e) => return Err(err(e)),
+            }
+        }
+        let metadata = fs::symlink_metadata(&current).map_err(err)?;
+        if !metadata.is_dir() || reparse(&metadata) {
+            return Err("작업 폴더 안의 일반 폴더를 사용하세요.".into());
+        }
+        current = canonical(&current)?;
+        if !inside(root, &current) {
+            return Err("작업 폴더 밖에는 접근할 수 없습니다.".into());
+        }
+    }
+    Ok(current)
+}
+
+/// True for symbolic links, junctions and other reparse points.
+pub fn is_link(metadata: &fs::Metadata) -> bool {
+    reparse(metadata)
+}
+
 pub fn extension(path: &Path, extensions: &[&str]) -> bool {
     extensions.is_empty()
         || path

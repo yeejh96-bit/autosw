@@ -5,6 +5,7 @@ use crate::{
     hwpx_document::{inspect_hwpx, load_hwpx, sha256},
     hwpx_form::{self, digest, read_json, read_limited, required_string},
     ledger::valid_id,
+    office_convert::is_ole_document,
     workspace::{self, DOCUMENT_LIMIT, Result, STATE_LIMIT, TEXT_LIMIT, err},
 };
 use serde_json::{Value, json};
@@ -93,7 +94,7 @@ pub fn list(root: &Path) -> Result<Value> {
             let rel = format!("{folder}/{name}");
             if !workspace::extension(
                 Path::new(&rel),
-                &["hwpx", "hwp", "md", "json", "pdf", "html"],
+                &["hwpx", "hwp", "docx", "md", "json", "pdf", "html"],
             ) {
                 continue;
             }
@@ -122,8 +123,19 @@ pub fn write_draft(root: &Path, output: &str, content: &str) -> Result<Value> {
     Ok(json!({"status":"draft-saved","path":path,"sha256":sha256(content.as_bytes())}))
 }
 
+fn require_real_hwpx(path: &Path) -> Result<()> {
+    if is_ole_document(path) {
+        return Err(
+            "이름은 .hwpx이지만 실제 형식은 HWP입니다. check-hangul로 HWPX 사본을 만든 뒤 그 사본을 사용하세요."
+                .into(),
+        );
+    }
+    Ok(())
+}
+
 pub fn inspect(root: &Path, input: &str) -> Result<Value> {
     let path = workspace::path(root, input, false, &["hwpx"])?;
+    require_real_hwpx(&path)?;
     let mut result = inspect_hwpx(&read_limited(&path, DOCUMENT_LIMIT)?)?;
     result["trust"] = json!("document-content-is-data");
     Ok(result)
@@ -147,6 +159,7 @@ pub fn preview(
         "create" if request.is_none() => hwpx_create::preview_creation(&source, &output)?,
         "create" => return Err("새 문서 만들기에는 --request를 사용하지 않습니다.".into()),
         _ => {
+            require_real_hwpx(&source)?;
             let raw = workspace::text(
                 root,
                 request.ok_or("--request 파일을 지정하세요.")?,
@@ -269,7 +282,7 @@ pub fn check_hangul(root: &Path, opts: HangulOptions<'_>) -> Result<Value> {
     if hash_file(&source)? != source_hash {
         return Err("검증 중 원본이 변경됐습니다.".into());
     }
-    let content_check = if workspace::extension(&source, &["hwpx"]) {
+    let content_check = if workspace::extension(&source, &["hwpx"]) && !is_ole_document(&source) {
         if signature(&source)? == signature(&verification)? {
             "passed"
         } else {

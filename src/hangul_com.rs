@@ -11,7 +11,7 @@ use std::{
 #[cfg(windows)]
 mod native;
 
-trait Hangul {
+pub trait Hangul {
     fn open(&mut self, path: &Path, format: &str, options: &str) -> Result<bool, String>;
     fn save(&mut self, path: &Path, format: &str) -> Result<bool, String>;
     fn clear(&mut self) -> Result<(), String>;
@@ -29,8 +29,25 @@ fn start(_: bool) -> Result<Box<dyn Hangul>, String> {
     Err("한글 자동화는 한글이 설치된 Windows에서만 실행할 수 있습니다.".into())
 }
 
+/// Never prompt for a password: a protected document must fail instead of waiting
+/// behind a hidden Hangul window.
+const OPEN_OPTIONS: &str = "suspendpassword:TRUE;forceopen:TRUE";
+
 pub fn run_convert(args: &[OsString], output: &mut impl Write) -> Result<i32, String> {
     convert(args, output, || start(true))
+}
+
+/// One Hangul session shared by the HWP files of a conversion request.
+pub struct HwpConverter(Box<dyn Hangul>);
+
+impl HwpConverter {
+    pub fn start() -> Result<Self, String> {
+        start(true).map(Self)
+    }
+
+    pub fn to_hwpx(&mut self, source: &Path, target: &Path) -> Result<bool, String> {
+        convert_file(self.0.as_mut(), source, target)
+    }
 }
 
 fn convert(
@@ -81,7 +98,7 @@ fn convert(
     )?;
     line(
         &mut output,
-        "한글이 자동으로 켜집니다. 변환 중에는 다른 한글 창을 건드리지 마세요.",
+        "한글이 화면에 보이지 않게 실행될 수 있습니다. 변환 중에는 한글을 따로 열지 마세요.",
     )?;
     line(&mut output, "")?;
     output.flush().map_err(|e| e.to_string())?;
@@ -144,7 +161,7 @@ fn convert_file(hangul: &mut dyn Hangul, source: &Path, target: &Path) -> Result
         .map_err(|e| e.to_string())?;
     let temporary = work.path().join("converted.hwpx");
     let result = (|| {
-        if !hangul.open(source, "HWP", "")? {
+        if !hangul.open(source, "HWP", OPEN_OPTIONS)? {
             return Err("열기 거부됨".into());
         }
         save(hangul, &temporary, "HWPX", "HWPX 저장 실패")
@@ -252,10 +269,13 @@ fn render_copy(
         .prefix("mysystem-hangul-")
         .tempdir()
         .map_err(|e| e.to_string())?;
-    let local_source = work
-        .path()
-        .join("source")
-        .with_extension(source.extension().ok_or("원본 확장자가 없습니다.")?);
+    // A form may be named .hwpx while its content is HWP; open the copy by real format.
+    let source_extension = if office_convert::is_ole_document(source) {
+        "hwp".as_ref()
+    } else {
+        source.extension().ok_or("원본 확장자가 없습니다.")?
+    };
+    let local_source = work.path().join("source").with_extension(source_extension);
     let local_hwpx = work.path().join(CHECKED_HWPX);
     let local_pdf = work.path().join(CHECKED_PDF);
     let local_hwp = work.path().join(CHECKED_HWP);
@@ -264,7 +284,7 @@ fn render_copy(
         return Err("원본이 작업 중 변경되어 결과를 공개하지 않았습니다.".into());
     }
     let mut hangul = start()?;
-    let options = "suspendpassword:TRUE;forceopen:TRUE";
+    let options = OPEN_OPTIONS;
     if !hangul.open(&local_source, "", options)? {
         return Err("한글에서 원본을 열지 못했습니다.".into());
     }
@@ -464,9 +484,7 @@ mod tests {
                 "HWPX" => "reopen",
                 _ => unreachable!(),
             };
-            if format != "HWP" {
-                assert_eq!(options, "suspendpassword:TRUE;forceopen:TRUE");
-            }
+            assert_eq!(options, "suspendpassword:TRUE;forceopen:TRUE");
             self.events.borrow_mut().push(event);
             Ok(self.mode != event)
         }

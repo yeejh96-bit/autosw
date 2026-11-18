@@ -3,6 +3,7 @@ pub mod browser_canvas;
 pub mod browser_session;
 #[cfg(windows)]
 pub(crate) mod com_dispatch;
+pub mod document_convert;
 pub mod hangul_com;
 pub mod hangul_preview;
 pub mod hwpx_compose;

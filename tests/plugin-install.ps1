@@ -1,4 +1,4 @@
-#requires -Version 7.3
+﻿#requires -Version 5.1
 param([string]$LegacyRevision = 'aa92d23')
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
@@ -6,10 +6,18 @@ $temp = [IO.Path]::GetFullPath([IO.Path]::GetTempPath())
 $test = Join-Path $temp ('autosw-plugin-test-' + [guid]::NewGuid().ToString('N'))
 $git = (Get-Command git.exe -CommandType Application | Select-Object -First 1).Source
 $codex = (Get-Command codex.exe -CommandType Application | Select-Object -First 1).Source
+$claude = (Get-Command claude.exe -CommandType Application | Select-Object -First 1).Source
 $powershell = Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe'
 $feed = Join-Path $test 'feed'
 $work = Join-Path $test '기존 # 업무 폴더'
 $url = 'https://github.com/autosw-test-fixture/autosw.git'
+
+function Quote([string]$Value) {
+  $escaped = [regex]::Replace($Value, '(\\*)"', '$1$1\"')
+  '"' + [regex]::Replace($escaped, '(\\+)$', '$1$1') + '"'
+}
+
+function ReadJson([string]$Path) { [IO.File]::ReadAllText($Path) | ConvertFrom-Json }
 
 function Run([string]$Tool, [string[]]$Arguments, [string]$Profile = '', [switch]$Failure) {
   $processInfo = [Diagnostics.ProcessStartInfo]::new($Tool)
@@ -20,20 +28,21 @@ function Run([string]$Tool, [string[]]$Arguments, [string]$Profile = '', [switch
   $processInfo.RedirectStandardError = $true
   $processInfo.StandardOutputEncoding = [Text.Encoding]::UTF8
   $processInfo.StandardErrorEncoding = [Text.Encoding]::UTF8
-  foreach ($arg in $Arguments) { $processInfo.ArgumentList.Add($arg) }
-  $processInfo.Environment['PATH'] = "$(Split-Path -Parent $git);$env:SystemRoot\System32;$env:SystemRoot"
-  $processInfo.Environment['GIT_TERMINAL_PROMPT'] = '0'
+  $processInfo.Arguments = @($Arguments | ForEach-Object { Quote $_ }) -join ' '
+  $processInfo.EnvironmentVariables['PATH'] = "$(Split-Path -Parent $git);$env:SystemRoot\System32;$env:SystemRoot"
+  $processInfo.EnvironmentVariables['GIT_TERMINAL_PROMPT'] = '0'
   if ($Profile) {
-    $processInfo.Environment['CODEX_HOME'] = $Profile
-    $processInfo.Environment['GIT_CONFIG_COUNT'] = '1'
-    $processInfo.Environment['GIT_CONFIG_KEY_0'] = 'url.' + ([uri]::new($feed)).AbsoluteUri + '.insteadOf'
-    $processInfo.Environment['GIT_CONFIG_VALUE_0'] = $url
+    $processInfo.EnvironmentVariables['CODEX_HOME'] = $Profile
+    $processInfo.EnvironmentVariables['CLAUDE_CONFIG_DIR'] = $Profile
+    $processInfo.EnvironmentVariables['GIT_CONFIG_COUNT'] = '1'
+    $processInfo.EnvironmentVariables['GIT_CONFIG_KEY_0'] = 'url.' + ([uri]::new($feed)).AbsoluteUri + '.insteadOf'
+    $processInfo.EnvironmentVariables['GIT_CONFIG_VALUE_0'] = $url
   }
   $process = [Diagnostics.Process]::Start($processInfo)
   try {
     $stdout = $process.StandardOutput.ReadToEndAsync()
     $stderr = $process.StandardError.ReadToEndAsync()
-    if (-not $process.WaitForExit(45000)) { $process.Kill($true); throw "시험 명령 시간 초과: $($Arguments[0])" }
+    if (-not $process.WaitForExit(120000)) { $process.Kill(); throw "시험 명령 시간 초과: $($Arguments[0])" }
     if (($process.ExitCode -eq 0) -eq [bool]$Failure) { throw "$($Arguments[0]) 종료 코드 $($process.ExitCode): $($stderr.Result) $($stdout.Result)" }
     $stdout.Result
   } finally { $process.Dispose() }
@@ -51,7 +60,7 @@ function Cache([string]$Profile, [string]$Version) {
   $path = Join-Path $Profile 'plugins/cache/autosw-marketplace/autosw'
   $installed = @(Get-ChildItem -LiteralPath $path -Directory | Where-Object {
     $manifest = Join-Path $_.FullName 'plugin.json'
-    [IO.File]::Exists($manifest) -and (([IO.File]::ReadAllText($manifest) | ConvertFrom-Json).version -eq $Version)
+    [IO.File]::Exists($manifest) -and ((ReadJson $manifest).version -eq $Version)
   })
   if ($installed.Count -ne 1) { throw "설치된 플러그인 $Version 버전을 찾지 못했습니다." }
   $installed[0].FullName
@@ -75,7 +84,7 @@ try {
   FixtureGit @('init', '-q', '-b', 'main')
   FixtureGit @('add', '--all')
   FixtureGit @('commit', '-q', '-m', 'Legacy plugin test fixture')
-  $legacy = (Get-Content -Raw -LiteralPath (Join-Path $feed 'plugin.json') | ConvertFrom-Json).version
+  $legacy = (ReadJson (Join-Path $feed 'plugin.json')).version
   Run $codex @('plugin','marketplace','add',$url,'--ref','main','--json') $upgradeProfile | Out-Null
   InstallPlugin $upgradeProfile
   [void](Cache $upgradeProfile $legacy)
@@ -96,14 +105,14 @@ try {
   }
   FixtureGit @('add', '--all')
   FixtureGit @('commit', '-q', '-m', 'Rust plugin test fixture')
-  $version = (Get-Content -Raw -LiteralPath (Join-Path $feed 'plugin.json') | ConvertFrom-Json).version
+  $version = (ReadJson (Join-Path $feed 'plugin.json')).version
   Run $codex @('plugin','marketplace','upgrade','autosw-marketplace','--json') $upgradeProfile | Out-Null
   InstallPlugin $upgradeProfile
   $updated = Cache $upgradeProfile $version
   Setup $updated $work $version
   $launch = Join-Path $updated 'scripts/autosw.ps1'
   $query = Run $powershell @('-NoProfile','-NonInteractive','-File',$launch,'ledger-query','--workspace',$work) | ConvertFrom-Json
-  $expected = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'fixtures/ledger-v1-report.json') | ConvertFrom-Json
+  $expected = ReadJson (Join-Path $PSScriptRoot 'fixtures/ledger-v1-report.json')
   if ($query.sourceHash -ne $expected.sourceHash -or $query.totals.expenseTotal -ne $expected.totals.expenseTotal) { throw '기존 장부 조회가 달라졌습니다.' }
   if ($beforeLedger -ne (Get-FileHash -LiteralPath $ledger).Hash -or $beforeSettings -ne (Get-FileHash -LiteralPath $settings).Hash) { throw '기존 업무 파일이 변경됐습니다.' }
   Write-Output "플러그인 업데이트 후 기존 장부·설정 대조 통과"
@@ -120,6 +129,21 @@ try {
   $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes('& ' + $escaped + '; exit $LASTEXITCODE'))
   Run $powershell @('-NoProfile','-NonInteractive','-EncodedCommand',$encoded) | Out-Null
   if ([IO.File]::ReadAllText((Join-Path $newWorkspace 'drafts/quote.json')) -cne $content) { throw 'Windows PowerShell에서 원고 인자가 달라졌습니다.' }
+  $guide = Run $powershell @('-NoProfile','-NonInteractive','-File',(Join-Path $fresh 'scripts/autosw.ps1'),'guide','--topic','references/convert.md') | ConvertFrom-Json
+  if ($guide.topic -ne 'references/convert.md') { throw 'Codex 설치본에서 변환 지침을 찾지 못했습니다.' }
+
+  $claudeProfile = Join-Path $test 'claude-profile'
+  [void][IO.Directory]::CreateDirectory($claudeProfile)
+  Run $claude @('plugin','validate',$feed) $claudeProfile | Out-Null
+  Run $claude @('plugin','marketplace','add',$feed) $claudeProfile | Out-Null
+  Run $claude @('plugin','install','autosw@autosw-marketplace') $claudeProfile | Out-Null
+  $claudeCache = Join-Path $claudeProfile "plugins/cache/autosw-marketplace/autosw/$version"
+  if ((ReadJson (Join-Path $claudeCache '.claude-plugin/plugin.json')).version -ne $version) { throw 'Claude Code 설치 버전이 다릅니다.' }
+  Setup $claudeCache $work $version
+  $guide = Run $powershell @('-NoProfile','-NonInteractive','-File',(Join-Path $claudeCache 'scripts/autosw.ps1'),'guide','--topic','references/convert.md') | ConvertFrom-Json
+  if ($guide.topic -ne 'references/convert.md') { throw 'Claude Code 설치본에서 변환 지침을 찾지 못했습니다.' }
+  if ($beforeLedger -ne (Get-FileHash -LiteralPath $ledger).Hash -or $beforeSettings -ne (Get-FileHash -LiteralPath $settings).Hash) { throw 'Claude Code 설정이 기존 업무 파일을 변경했습니다.' }
+  Write-Output "Claude Code 신규 설치와 Codex 업무 폴더 공동 사용 통과"
   $badWorkspace = Join-Path $test '손상 패키지 시험'
   [IO.File]::AppendAllText((Join-Path $fresh 'runtime/autosw.exe'), 'test-tamper')
   Run $powershell @('-NoProfile','-NonInteractive','-File',(Join-Path $fresh 'scripts/install.ps1'),'-Workspace',$badWorkspace) -Failure | Out-Null

@@ -57,11 +57,19 @@ impl Session {
             _lease: lease,
         };
         if interactive {
-            let _ = session.object.call(
-                "RegisterModule",
-                &[text("FilePathCheckDLL"), text("FilePathCheckerModule")],
-            );
-            let _ = window.put("Visible", Argument::Bool(true));
+            let registered = session
+                .object
+                .call(
+                    "RegisterModule",
+                    &[text("FilePathCheckDLL"), text("FilePathCheckerModule")],
+                )
+                .and_then(|value| value.boolean())
+                .unwrap_or(false);
+            // Keep the window hidden only when the approval module is active;
+            // otherwise the file-access prompt must stay visible to the user.
+            if !registered {
+                let _ = window.put("Visible", Argument::Bool(true));
+            }
         }
         Ok(session)
     }

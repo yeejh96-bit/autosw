@@ -1,5 +1,5 @@
 use autosw::{
-    ledger, service,
+    document_convert, ledger, service,
     workspace::{self, Result},
 };
 use serde_json::json;
@@ -17,6 +17,7 @@ const COMMANDS: &[(&str, &[&str])] = &[
     ("read", &["workspace", "input"]),
     ("write-draft", &["workspace", "output", "content"]),
     ("inspect", &["workspace", "input"]),
+    ("convert", &["workspace", "input", "output"]),
     (
         "preview",
         &["workspace", "kind", "input", "output", "request"],
@@ -111,6 +112,7 @@ fn run(args: &[String]) -> Result<String> {
                 "read" => service::read(&root, req("input")?)?,
                 "write-draft" => service::write_draft(&root, req("output")?, req("content")?)?,
                 "inspect" => service::inspect(&root, req("input")?)?,
+                "convert" => document_convert::convert(&root, req("input")?, req("output")?)?,
                 "preview" => service::preview(
                     &root,
                     req("kind")?,

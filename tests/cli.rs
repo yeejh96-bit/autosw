@@ -34,6 +34,63 @@ fn field<'a>(value: &'a Value, name: &str) -> &'a str {
 }
 
 #[test]
+fn convert_writes_markdown_inside_workspace_and_protects_sources() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("한글 # 변환");
+    ok(&root, &["init"]);
+    let ole = [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1, 0];
+    let docx = autosw::office_zip::create_zip(&[(
+        "word/document.xml".into(),
+        r#"<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>합성 워드 본문</w:t></w:r></w:p></w:body></w:document>"#.as_bytes().to_vec(),
+    )])
+    .unwrap();
+    let hwpx = autosw::office_zip::create_zip(&[(
+        "Contents/section0.xml".into(),
+        r#"<hs:sec xmlns:hs="http://www.hancom.co.kr/hwpml/2011/section" xmlns:hp="http://www.hancom.co.kr/hwpml/2011/paragraph"><hp:p><hp:run><hp:t>합성 한글 본문</hp:t></hp:run></hp:p></hs:sec>"#.as_bytes().to_vec(),
+    )])
+    .unwrap();
+    let sources = root.join("templates");
+    fs::create_dir(sources.join("하위")).unwrap();
+    fs::write(sources.join("같은이름.docx"), &docx).unwrap();
+    fs::write(sources.join("하위/같은이름.hwpx"), &hwpx).unwrap();
+    fs::write(sources.join("암호.docx"), ole).unwrap();
+    fs::write(sources.join("~$잠금.docx"), b"lock").unwrap();
+
+    let args = ["convert", "--input", "templates", "--output", "drafts/변환"];
+    let first = ok(&root, &args);
+    assert_eq!(first["status"], "converted-with-skips");
+    assert_eq!(first["converted"], 2);
+    assert_eq!(first["skippedProtected"], 1);
+    let word = ok(&root, &["read", "--input", "drafts/변환/같은이름.docx.md"]);
+    assert!(field(&word, "content").contains("합성 워드 본문"));
+    assert!(
+        fs::read_to_string(root.join("drafts/변환/하위/같은이름.hwpx.md"))
+            .unwrap()
+            .contains("합성 한글 본문")
+    );
+    assert!(!root.join("drafts/변환/암호.docx.md").exists());
+    assert_eq!(fs::read(sources.join("같은이름.docx")).unwrap(), docx);
+    assert_eq!(ok(&root, &args)["reused"], 2);
+
+    let result = root.join("drafts/변환/같은이름.docx.md");
+    fs::write(&result, "사용자가 고친 글").unwrap();
+    fail(&root, &args);
+    assert_eq!(fs::read_to_string(&result).unwrap(), "사용자가 고친 글");
+
+    for (input, output) in [
+        ("templates", "templates/결과"),
+        ("drafts", "drafts/변환/다시"),
+        ("../밖.docx", "drafts/결과"),
+        ("templates/같은이름.docx", "../밖"),
+        (".autosw", "drafts/결과"),
+    ] {
+        fail(&root, &["convert", "--input", input, "--output", output]);
+    }
+    fs::write(sources.join("이름만.hwpx"), ole).unwrap();
+    fail(&root, &["inspect", "--input", "templates/이름만.hwpx"]);
+}
+
+#[test]
 fn legacy_ledger_opens_and_reports_unchanged_before_approved_write() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path().join("한글 # 기존 장부");

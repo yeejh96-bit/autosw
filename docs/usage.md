@@ -29,7 +29,16 @@
 
 작업 시작 시 `autosw.config.json`의 `institution`과 `writingPreferences`를 기관명·문체 기본값으로 읽습니다. 빈 값은 추측하지 않고 이번 요청과 지정 양식을 우선합니다.
 
-양식이 HWP라면 `check-hangul`로 새 HWPX 사본과 PDF를 만든 뒤 그 파일을 읽습니다. `hwp-source-needs-review`는 원문 내용의 자동 대조가 완료되지 않은 상태이며 바로 `publish`할 수 없습니다. 사용자가 HWP 원문과 변환본을 대조한 뒤 변환 HWPX를 새 작성 절차의 입력으로 사용합니다. 변환 결과의 실제 형식과 상태를 확인하고 원본을 보존합니다.
+양식이 HWP라면 `check-hangul`로 새 HWPX 사본과 PDF를 만든 뒤 그 파일을 읽습니다. `hwp-source-needs-review`는 원문 내용의 자동 대조가 완료되지 않은 상태이며 바로 `publish`할 수 없습니다. 사용자가 HWP 원문과 변환본을 대조한 뒤 변환 HWPX를 새 작성 절차의 입력으로 사용합니다. 변환 결과의 실제 형식과 상태를 확인하고 원본을 보존합니다. 이름이 `.hwpx`여도 실제 내용이 HWP인 양식은 같은 방법으로 사본을 만듭니다.
+
+## HWP·HWPX·DOCX를 글로 변환
+
+```powershell
+./scripts/autosw.ps1 convert --workspace "D:\autosw-work" --input "templates/자료.hwp" --output "drafts/변환"
+./scripts/autosw.ps1 convert --workspace "D:\autosw-work" --input "templates" --output "drafts/변환"
+```
+
+`--input`은 업무 폴더 안의 파일이나 폴더입니다. 결과는 `drafts/변환/자료.hwp.md`처럼 원본 확장자를 붙여 저장하며, 원본과 내용이 다른 기존 결과를 덮어쓰지 않습니다. HWP와 이름만 `.hwpx`인 HWP에는 설치된 한글이 필요합니다. 암호가 걸린 것으로 보이는 DOCX는 건너뛰고(`skippedProtected`), 한글이 열지 못한 파일은 실패로 알립니다. 실패가 하나라도 있으면 명령은 실패로 끝나고 파일별 이유를 보여 줍니다. 변환 글은 내용 확인용이며 표 구조는 `inspect`로 확인합니다. [파일 변환 절차](../skills/autosw-document/references/convert.md)
 
 ## 새 HWPX 만들기
 

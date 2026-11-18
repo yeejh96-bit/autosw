@@ -10,7 +10,11 @@ $utf8 = [Text.UTF8Encoding]::new($false)
 Push-Location -LiteralPath $root
 try {
   if (-not $Check) {
+    # Keep the builder's home folder out of the published executable.
+    $separator = [char]0x1f
+    $env:CARGO_ENCODED_RUSTFLAGS = "-Ctarget-feature=+crt-static$separator--remap-path-prefix=$env:USERPROFILE=~"
     cargo build --locked --release --target $target
+    Remove-Item Env:CARGO_ENCODED_RUSTFLAGS
     if ($LASTEXITCODE -ne 0) { throw 'Rust 실행 파일 빌드 실패' }
     $built = Join-Path $root "target/$target/release/autosw.exe"
     if ((& $built --version) -cne "autosw $version" -or $LASTEXITCODE -ne 0) { throw '실행 파일과 플러그인 버전이 다릅니다.' }
