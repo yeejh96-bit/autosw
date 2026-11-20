@@ -282,7 +282,7 @@ pub fn preview(root: &Path, input: &Value) -> Result<Value> {
         "status":"awaiting-ledger-approval","planId":plan_id,"confirmHash":confirmation,
         "operation":request["operation"],"kind":request["kind"],"before":before,"after":after,
         "storage":root.join(".autosw/ledger.json"),
-        "note":"내용과 저장 위치를 사용자에게 보여 주고 승인받으세요. 해시와 개발 승인은 실제 자료 입력 동의가 아닙니다."
+        "note":"내용과 저장 위치를 사용자에게 보여 주고 승인받으세요. 사용자가 직접 요청한 새 기록 등록은 스킬의 「새 기록 바로 입력」 조건에서만 요청을 승인으로 봅니다. 해시와 개발 승인은 실제 자료 입력 동의가 아닙니다."
     });
     if let Some(reason) = request.get("reason") {
         result["reason"] = reason.clone();

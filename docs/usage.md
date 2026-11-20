@@ -11,7 +11,7 @@
 ./scripts/autosw.ps1 ledger-report --workspace "D:\autosw-work" --program <프로그램명> --from <시작일> --to <종료일>
 ```
 
-`--approved`는 미리보기 내용을 실제 사용자에게 확인받은 뒤에만 지정합니다. 수정·삭제도 같은 미리보기와 승인 명령을 사용합니다. `--kind attendance` 또는 `--kind expense`로 한 종류만 조회할 수 있습니다. 조회하지 않은 항목은 0이 아닌 미조회로 표시됩니다. 반환된 `document`를 JSON 원고로 저장하면 특수문자를 유지하여 기존 `preview --kind create` 경로로 한글파일을 생성할 수 있습니다.
+`--approved`는 미리보기 내용을 실제 사용자에게 확인받은 뒤에 지정합니다. 사용자가 직접 요청한 새 기록 등록은 [인원·지출 관리](../skills/autosw-document/references/ledger.md)의 「새 기록 바로 입력」 조건을 충족할 때 그 요청을 승인으로 봅니다. 수정·삭제도 같은 미리보기와 승인 명령을 사용합니다. `--kind attendance` 또는 `--kind expense`로 한 종류만 조회할 수 있습니다. 조회하지 않은 항목은 0이 아닌 미조회로 표시됩니다. 반환된 `document`를 JSON 원고로 저장하면 특수문자를 유지하여 기존 `preview --kind create` 경로로 한글파일을 생성할 수 있습니다.
 
 예시는 autosw 설치 폴더에서 실행합니다. Codex·Claude Code에서는 설치된 플러그인의 `scripts/autosw.ps1` 전체 경로로 호출하며, 아래와 같은 하위 명령을 사용합니다. 이 진입점은 플러그인에 포함된 Rust 실행 파일을 호출합니다. 업무 경로는 `--workspace`로 지정하며 그 안의 상대경로를 입력합니다. 명령의 오류와 반환 상태를 확인하고, 미지원·검증 대기를 성공으로 처리하지 않습니다.
 
