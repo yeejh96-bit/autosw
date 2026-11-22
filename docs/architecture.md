@@ -6,7 +6,7 @@ autosw는 로컬 my-system의 문서 작성·한글 출력을 분리하고 개�
 
 | 구성 | 역할 |
 |---|---|
-| `AGENTS.md` | autosw를 개발하는 AI의 작업 범위와 검증 기준 |
+| `AGENTS.md` | autosw를 개발하는 AI의 작업 범위와 검증 기준. Codex는 직접, Claude Code는 `CLAUDE.md`(`@AGENTS.md`)를 거쳐 읽음 |
 | `skills/autosw-document/` | 직원의 문서 작성·검토·출력 절차와 종류별 지침의 정본 |
 | `src/main.rs`·`src/workspace.rs`·`src/service.rs` | 명령행, 작업 폴더 경계, 미리보기와 실행 |
 | `src/document_convert.rs`·`src/office_*` | 업무 폴더 안의 HWP·HWPX·DOCX를 평문 Markdown으로 변환 |

@@ -26,5 +26,5 @@ autosw는 사회복지 문서 작성·한글파일 처리·문서 글 변환과 
 
 - 스킬과 MCP 지침은 사용자가 승인한 사실·작업 범위를 보존한다. 인원 실적·지출은 개인 작업 폴더에서 관리하고 쓰기는 내용 미리보기→사용자 승인→실행을 따른다. 사용자가 직접 요청한 새 기록 등록은 [인원·지출 관리](skills/autosw-document/references/ledger.md)의 「새 기록 바로 입력」 조건에서만 요청을 승인으로 보고 사후 보고한다. 일정·업무일지·위키·자동 백업 기능을 추가하지 않는다.
 - 지원 환경과 한계를 `README.md`와 `docs/support.md`에 반영한다. 확인하지 않은 ChatGPT·Claude 계정·앱·한글 버전의 동작을 보장하지 않는다.
-- Codex(`plugin.json`, `.agents/plugins/`)와 Claude Code(`.claude-plugin/`) 구성은 같은 `skills/`·`scripts/`·`runtime/`을 공유한다. 한쪽 전용 기능에 의존하는 지침을 스킬에 넣지 않고, 버전·이름·설명을 두 구성에서 함께 맞춘다. 플러그인 루트에 `CLAUDE.md`를 두지 않는다(Claude Code가 이 `AGENTS.md`를 직접 읽는다).
+- Codex(`plugin.json`, `.agents/plugins/`)와 Claude Code(`.claude-plugin/`) 구성은 같은 `skills/`·`scripts/`·`runtime/`을 공유한다. 한쪽 전용 기능에 의존하는 지침을 스킬에 넣지 않고, 버전·이름·설명을 두 구성에서 함께 맞춘다. Claude Code는 `AGENTS.md`를 직접 읽지 않으므로 개발용 `CLAUDE.md`는 `@AGENTS.md` 한 줄만 두고 규칙은 이 파일에서만 관리한다. 플러그인 설치 사용자에게는 `CLAUDE.md`가 적용되지 않는다.
 - 외부 코드의 저작권·라이선스 고지를 유지한다. 최종 배포 파일 목록을 점검하여 운영 자료와 설치자의 개인 설정이 포함되지 않았는지 확인한다.

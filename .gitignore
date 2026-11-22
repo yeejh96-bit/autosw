@@ -9,3 +9,6 @@ workspace/
 .autosw/
 autosw.config.json
 /target/
+
+# Claude Code 개인 설정(이 PC의 폴더 배치용, 예: 상위 my-system 지침 제외)
+.claude/settings.local.json
