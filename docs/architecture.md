@@ -17,6 +17,7 @@ autosw는 로컬 my-system의 문서 작성·한글 출력을 분리하고 개�
 | `.agents/plugins/marketplace.json`·`plugin.json` | GitHub에서 추가하는 Codex 플러그인 카탈로그와 구성 |
 | `.claude-plugin/marketplace.json`·`.claude-plugin/plugin.json` | GitHub에서 추가하는 Claude Code 플러그인 카탈로그와 구성. 같은 `skills/`·`scripts/`·`runtime/`을 사용 |
 | `scripts/install.ps1` | 첫 사용 준비 |
+| `scripts/check.ps1`·`scripts/stop-check.ps1`·`scripts/git-hooks/`·`.claude/settings.json`·`.github/workflows/` | 개발용 검사(공개 전·Claude Code 끝 검사·push 전·GitHub). 플러그인 설치 사용자의 업무 폴더 설정에는 적용되지 않음 |
 
 문서 작성 판단은 스킬이 담당하고, 파일 보호·입력 일치·허용 경로 같은 조건은 실행 도구도 검사합니다. Codex와 Claude Code는 설치된 같은 스킬을 따라 플러그인의 명령행을 Windows PowerShell에서 직접 실행합니다.
 

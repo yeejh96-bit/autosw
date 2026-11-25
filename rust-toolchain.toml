@@ -1,0 +1,5 @@
+# autosw는 Windows x64(MSVC) 실행 파일만 배포한다. 상위 폴더의 다른 도구 체인 설정을 따르지 않도록 여기서 고정한다.
+[toolchain]
+channel = "stable-x86_64-pc-windows-msvc"
+profile = "minimal"
+components = ["rustfmt", "clippy"]

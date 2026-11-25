@@ -1,3 +1,4 @@
 runtime/autosw.exe binary
 runtime/autosw.exe.sha256 text eol=lf
 runtime/THIRD-PARTY.txt text eol=lf
+scripts/git-hooks/* text eol=lf

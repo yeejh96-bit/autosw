@@ -1,0 +1,12 @@
+#!/bin/sh
+# push 전에 전체 검사(scripts/check.ps1)를 실행한다. 실패하면 push를 막는다.
+# 켜기(저장소마다 한 번): git config core.hooksPath scripts/git-hooks
+root=$(git rev-parse --show-toplevel) || exit 1
+cd "$root" || exit 1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check.ps1
+status=$?
+if [ "$status" -ne 0 ]; then
+  echo "push 중단: 전체 검사가 실패했습니다. 고친 뒤 다시 push하세요." >&2
+  exit 1
+fi
+exit 0
