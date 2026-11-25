@@ -13,11 +13,15 @@ jobs:
   check:
     runs-on: windows-latest
     timeout-minutes: 45
+    # 개발 PC와 같은 Rust 버전으로 검사한다. 새 버전의 경고 규칙 때문에만 실패하지 않게 한다.
+    # 개발 PC의 Rust를 올리면 이 값도 함께 올린다.
+    env:
+      RUSTUP_TOOLCHAIN: 1.89.0-x86_64-pc-windows-msvc
     steps:
       # 로컬 작업 폴더처럼 LF 그대로 받아 서식·시험 자료가 바뀌지 않게 한다.
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@1.89.0
         with:
           targets: x86_64-pc-windows-msvc
           components: rustfmt, clippy
